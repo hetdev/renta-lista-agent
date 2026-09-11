@@ -1,0 +1,33 @@
+schema_version: 1
+tax_year: 2025
+rule_pack: ag2025
+status: APPROVED
+source_note: >
+  Formulario 210 instructivo Res. 000044/2024 (mod. 000120/2024, comp. 000227/2025).
+  UVT 2025 COP 49.799 per Res. 000193/2024. Values must be re-checked against official PDFs
+  before final golden freeze.
+cells_p0:
+  - 28
+  - 29
+  - 30
+  - 31
+  - 32
+  - 36
+  - 39
+  - 58
+  - 92
+  - 93
+  - 99
+  - 104
+  - 111
+  - 112
+  - 116
+  - 130
+  - 131
+  - 132
+  - 134
+  - 137
+  - 138
+  - 139
+  - 140
+  - 141

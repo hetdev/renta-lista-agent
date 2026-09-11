@@ -1,0 +1,19 @@
+uvt_2025: 49799
+uvt_source: Resolución DIAN 000193 de 2024-12-04
+factura_electronica_pct: "1"
+factura_electronica_max_uvt: 240
+exempt_income_pct_cap: 40
+exempt_income_uvt_cap: 1340
+dependent_adition_base_uvt: 524
+dependent_adition_pct: 10
+dependent_adition_max: 4
+patrimonio_bruto_uvt: 4500
+patrimonio_bruto_op: ">"
+ingresos_brutos_uvt: 1400
+ingresos_brutos_op: ">="
+consumos_tarjeta_uvt: 1400
+consumos_tarjeta_op: ">"
+compras_consumos_uvt: 1400
+compras_consumos_op: ">"
+consignaciones_uvt: 1400
+consignaciones_op: ">"

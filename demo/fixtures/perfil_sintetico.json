@@ -1,0 +1,13 @@
+{
+  "case_label": "caso-sintetico-principal",
+  "person": "Ana Rivera Demo",
+  "cedula": "1234567890",
+  "email": "ana.demo@example.com",
+  "dependents": 1,
+  "previous_filing": "FIRST",
+  "absence_attestations": {
+    "pensiones": true,
+    "dividendos": true,
+    "ganancias_ocasionales": true
+  }
+}

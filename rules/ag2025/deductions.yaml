@@ -1,0 +1,33 @@
+rules:
+  - rule_id: factura_electronica_1pct
+    cell: 28
+    formula: min(1% * compras_factura_electronica, 240 UVT)
+    status: APPROVED
+    source: instructivo Formulario 210
+  - rule_id: cell_92_limit
+    cell: 92
+    formula: min(exentas + deducciones_limitadas, min(40% * gravables_general, 1340 UVT)) + c28 + c139
+    notes: casillas 28 y 139 se suman por fuera del límite y no consumen el tope
+    status: APPROVED
+    source: instructivo Formulario 210
+  - rule_id: dependientes_adicion
+    cell: 139
+    formula: 10% * 524 UVT * min(dependientes, 4)
+    status: APPROVED
+    source: Estatuto Tributario / instructivo
+  - rule_id: patrimonio_liquido
+    cell: 31
+    formula: max(c29 - c30, 0)
+    status: APPROVED
+  - rule_id: saldo_invariant
+    cells: [134, 137]
+    formula: not (c134 > 0 and c137 > 0)
+    status: APPROVED
+  - rule_id: casilla_140
+    cell: 140
+    formula: unmarked for admitted profile
+    status: APPROVED
+  - rule_id: casilla_141
+    cell: 141
+    formula: zero unless user elects voluntary contribution
+    status: APPROVED

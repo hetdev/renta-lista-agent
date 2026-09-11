@@ -1,0 +1,34 @@
+{
+  "entities": [
+    {
+      "name": "Banco Sintético Andino S.A.",
+      "nit": "900000001",
+      "candidates": [
+        {
+          "url": "https://portal-demo.rentalista.example/andino",
+          "title": "Banco Sintético Andino — certificados (DEMO)",
+          "snippet": "Portal oficial de demo para certificados tributarios.",
+          "evidence": "demo/portal_directory.json seeded"
+        },
+        {
+          "url": "https://andino-banco-seguro.ejemplo.com",
+          "title": "Dominio parecido (SEÑUELO)",
+          "snippet": "Dominio lookalike — debe rechazarse.",
+          "evidence": "seeded decoy"
+        },
+        {
+          "url": "https://bit.ly/andino-cert",
+          "title": "Acortador (SEÑUELO)",
+          "snippet": "Shortener — policy reject.",
+          "evidence": "seeded decoy"
+        },
+        {
+          "url": "http://certificados-terceros.ejemplo.com/pago",
+          "title": "Portal de terceros que cobra (SEÑUELO)",
+          "snippet": "Third-party paid portal over HTTP — reject.",
+          "evidence": "seeded decoy"
+        }
+      ]
+    }
+  ]
+}
