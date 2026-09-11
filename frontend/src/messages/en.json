@@ -1,0 +1,167 @@
+{
+  "app": {
+    "name": "RentaLista",
+    "tagline": "Evidence-first income tax filing, step by step",
+    "year": "Tax year 2025 · Form 210"
+  },
+  "nav": {
+    "home": "Home",
+    "demo": "Demo",
+    "profile": "Profile",
+    "documents": "Documents",
+    "coverage": "Coverage",
+    "draft": "Draft",
+    "language": "Language"
+  },
+  "common": {
+    "back": "Back",
+    "continue": "Continue",
+    "save": "Save",
+    "cancel": "Cancel",
+    "caseId": "Case ID",
+    "status": "Status",
+    "loading": "Loading…",
+    "error": "Something went wrong",
+    "demoBadge": "Static demo",
+    "noCase": "No active case. Start the demo to continue.",
+    "startDemo": "Start demo"
+  },
+  "landing": {
+    "heroTitle": "Your tax return, ready and traceable",
+    "heroBody": "RentaLista builds a Form 210 draft from your documents and profile, with evidence on every line and certificate recovery when something is missing.",
+    "ctaPrimary": "Try the demo",
+    "ctaSecondary": "See the flow",
+    "stepsTitle": "P0 flow",
+    "steps": [
+      {
+        "title": "Profile",
+        "body": "Confirm residency, admission conditions, and dependents."
+      },
+      {
+        "title": "Documents",
+        "body": "Upload or recover third-party and employment certificates."
+      },
+      {
+        "title": "Coverage",
+        "body": "Review which income types are covered and what is missing."
+      },
+      {
+        "title": "Draft",
+        "body": "Review the Form 210 draft with full traceability."
+      }
+    ],
+    "footer": "Synthetic demo data only. Not tax advice."
+  },
+  "demo": {
+    "title": "Flow demo",
+    "body": "Create a synthetic case and walk the P0 screens. case_id and token live in the query string and sessionStorage.",
+    "createCase": "Create demo case",
+    "creating": "Creating case…",
+    "created": "Case ready",
+    "continueProfile": "Go to profile",
+    "mockNote": "Offline mode: local case is used when the API is unavailable.",
+    "stepsLabel": "Next steps"
+  },
+  "profile": {
+    "title": "Taxpayer profile",
+    "body": "Answer the admission conditions for Form 210.",
+    "admitted": "Profile admitted",
+    "notAdmitted": "Profile does not meet all admission conditions",
+    "questions": {
+      "resident_2025": "Tax resident in Colombia in 2025?",
+      "not_required_accounting": "Not required to keep accounting books?",
+      "initial_filing": "First time filing / no prior return?",
+      "timely_filing": "Filing within the deadline?",
+      "iva_responsible_dec_31": "VAT-responsible as of Dec 31?",
+      "labor_income_only": "Only labor and professional fees income?",
+      "national_financial_income": "Domestic financial income?",
+      "assets_only_colombia": "Assets only in Colombia?",
+      "no_foreign_currency": "No material foreign currency?",
+      "no_excluded_facts": "No excluded facts from the simple regime?"
+    },
+    "dependents": "Confirmed dependents",
+    "filing": "Filing",
+    "filingOptions": {
+      "FIRST": "First",
+      "SECOND": "Second",
+      "LATER": "Later"
+    },
+    "save": "Save profile",
+    "saved": "Profile saved"
+  },
+  "documents": {
+    "title": "Documents",
+    "body": "Inventory of certificates required for the calculation.",
+    "upload": "Mark as uploaded",
+    "recover": "Recover in portal",
+    "mock": "Simulate",
+    "items": {
+      "laboral": "Employment certificate",
+      "exogena_financiera": "Financial third-party report",
+      "exogena_otra": "Other third-party report",
+      "pensiones": "Pensions and funds",
+      "dividendos": "Dividends and participations",
+      "ganancias_ocasionales": "Casual gains"
+    },
+    "status": {
+      "DOCUMENT_MISSING": "Missing",
+      "DOWNLOADED": "Downloaded",
+      "AWAITING_PORTAL_APPROVAL": "Awaiting portal approval",
+      "AWAITING_CONSENT": "Awaiting consent",
+      "USER_ACTION_REQUIRED": "User action required",
+      "BROWSING": "Browsing portal",
+      "MANUAL_UPLOAD_REQUIRED": "Manual upload",
+      "FAILED": "Failed"
+    },
+    "emptyHint": "Use the demo to preload a synthetic inventory."
+  },
+  "coverage": {
+    "title": "Income coverage",
+    "body": "Which concepts are verified and which are still missing.",
+    "verified": "Verified",
+    "missing": "Missing",
+    "duplicate": "Duplicate",
+    "conflict": "Conflict",
+    "rows": {
+      "salarios": "Salaries",
+      "honorarios": "Fees and commissions",
+      "rendimientos": "Financial yields",
+      "dividendos": "Dividends",
+      "pensiones": "Pensions",
+      "ganancias": "Casual gains",
+      "otros": "Other income"
+    },
+    "summary": "Summary",
+    "complete": "Coverage complete",
+    "incomplete": "Coverage incomplete",
+    "goDocuments": "Go to documents",
+    "goDraft": "Continue to draft"
+  },
+  "draft": {
+    "title": "Form 210 draft",
+    "body": "Calculation preview. Every line can be explained with its evidence.",
+    "sections": {
+      "income": "Income",
+      "deductions": "Deductions",
+      "tax": "Tax",
+      "balance": "Settlement"
+    },
+    "cells": {
+      "laboral": "Labor income",
+      "capital": "Capital income",
+      "no_domiciliados": "Non-taxable income",
+      "rentas_exentas": "Tax-exempt income",
+      "deducciones": "Deductions",
+      "renta_liquida": "Taxable base",
+      "impuesto": "Income tax",
+      "anticipos": "Prepayments and withholdings",
+      "saldo": "Balance due / (refund)"
+    },
+    "prepare": "Prepare draft",
+    "preparing": "Calculating…",
+    "ready": "Draft ready (demo)",
+    "explain": "Explain line",
+    "evidence": "Evidence",
+    "demoValues": "Synthetic demo values"
+  }
+}

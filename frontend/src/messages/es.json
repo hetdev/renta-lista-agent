@@ -1,0 +1,167 @@
+{
+  "app": {
+    "name": "RentaLista",
+    "tagline": "Declaración de renta con evidencia, paso a paso",
+    "year": "Año gravable 2025 · Formulario 210"
+  },
+  "nav": {
+    "home": "Inicio",
+    "demo": "Demo",
+    "profile": "Perfil",
+    "documents": "Documentos",
+    "coverage": "Cobertura",
+    "draft": "Borrador",
+    "language": "Idioma"
+  },
+  "common": {
+    "back": "Volver",
+    "continue": "Continuar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "caseId": "ID del caso",
+    "status": "Estado",
+    "loading": "Cargando…",
+    "error": "Algo salió mal",
+    "demoBadge": "Demo estática",
+    "noCase": "No hay caso activo. Inicia la demo para continuar.",
+    "startDemo": "Iniciar demo"
+  },
+  "landing": {
+    "heroTitle": "Tu declaración de renta, lista y trazable",
+    "heroBody": "RentaLista arma un borrador del Formulario 210 a partir de tus documentos y perfil, con evidencia en cada celda y recuperación de certificados cuando falten.",
+    "ctaPrimary": "Probar la demo",
+    "ctaSecondary": "Ver el flujo",
+    "stepsTitle": "Flujo P0",
+    "steps": [
+      {
+        "title": "Perfil",
+        "body": "Confirmas residencia, condiciones de admisión y dependientes."
+      },
+      {
+        "title": "Documentos",
+        "body": "Cargas o recuperas certificados exógenos y laborales."
+      },
+      {
+        "title": "Cobertura",
+        "body": "Revisas qué ingresos están cubiertos y qué falta."
+      },
+      {
+        "title": "Borrador",
+        "body": "Revisas el borrador del Formulario 210 con trazabilidad."
+      }
+    ],
+    "footer": "Solo datos sintéticos. No constituye asesoría tributaria."
+  },
+  "demo": {
+    "title": "Demo del flujo",
+    "body": "Crea un caso sintético y recorre las pantallas P0. El case_id y el token viven en la URL y en sessionStorage.",
+    "createCase": "Crear caso demo",
+    "creating": "Creando caso…",
+    "created": "Caso listo",
+    "continueProfile": "Ir al perfil",
+    "mockNote": "Modo offline: se usa un caso local si la API no está disponible.",
+    "stepsLabel": "Siguientes pasos"
+  },
+  "profile": {
+    "title": "Perfil del contribuyente",
+    "body": "Responde las condiciones de admisión para el Formulario 210.",
+    "admitted": "Perfil admitido",
+    "notAdmitted": "El perfil no cumple todas las condiciones de admisión",
+    "questions": {
+      "resident_2025": "¿Residente fiscal en Colombia en 2025?",
+      "not_required_accounting": "¿No obligado a llevar contabilidad?",
+      "initial_filing": "¿Primera vez que declara o no ha declarado antes?",
+      "timely_filing": "¿Presenta la declaración en término?",
+      "iva_responsible_dec_31": "¿Responsable de IVA al 31 de diciembre?",
+      "labor_income_only": "¿Solo ingresos laborales y honorarios?",
+      "national_financial_income": "¿Ingresos financieros nacionales?",
+      "assets_only_colombia": "¿Solo patrimonio en Colombia?",
+      "no_foreign_currency": "¿Sin moneda extranjera significativa?",
+      "no_excluded_facts": "¿Sin hechos excluides del régimen simple?"
+    },
+    "dependents": "Dependientes confirmados",
+    "filing": "Presentación",
+    "filingOptions": {
+      "FIRST": "Primera",
+      "SECOND": "Segunda",
+      "LATER": "Posterior"
+    },
+    "save": "Guardar perfil",
+    "saved": "Perfil guardado"
+  },
+  "documents": {
+    "title": "Documentos",
+    "body": "Inventario de certificados necesarios para el cálculo.",
+    "upload": "Marcar como cargado",
+    "recover": "Recuperar en portal",
+    "mock": "Simular",
+    "items": {
+      "laboral": "Certificado laboral (empleador)",
+      "exogena_financiera": "Exógena financiera",
+      "exogena_otra": "Otra exógena / retenedor",
+      "pensiones": "Pensiones y fondos",
+      "dividendos": "Dividendos y participaciones",
+      "ganancias_ocasionales": "Ganancias ocasionales"
+    },
+    "status": {
+      "DOCUMENT_MISSING": "Falta",
+      "DOWNLOADED": "Descargado",
+      "AWAITING_PORTAL_APPROVAL": "Espera aprobación",
+      "AWAITING_CONSENT": "Espera consentimiento",
+      "USER_ACTION_REQUIRED": "Acción del usuario",
+      "BROWSING": "Buscando en portal",
+      "MANUAL_UPLOAD_REQUIRED": "Carga manual",
+      "FAILED": "Error"
+    },
+    "emptyHint": "Usa la demo para precargar un inventario sintético."
+  },
+  "coverage": {
+    "title": "Cobertura de ingresos",
+    "body": "Mapa de qué conceptos están verificados y cuáles faltan.",
+    "verified": "Verificado",
+    "missing": "Faltante",
+    "duplicate": "Duplicado",
+    "conflict": "Conflicto",
+    "rows": {
+      "salarios": "Salarios",
+      "honorarios": "Honorarios y comisiones",
+      "rendimientos": "Rendimientos financieros",
+      "dividendos": "Dividendos",
+      "pensiones": "Pensiones",
+      "ganancias": "Ganancias ocasionales",
+      "otros": "Otros ingresos"
+    },
+    "summary": "Resumen",
+    "complete": "Cobertura completa",
+    "incomplete": "Cobertura incompleta",
+    "goDocuments": "Ir a documentos",
+    "goDraft": "Continuar al borrador"
+  },
+  "draft": {
+    "title": "Borrador Formulario 210",
+    "body": "Vista previa del cálculo. Cada casilla se puede explicar con su evidencia.",
+    "sections": {
+      "income": "Ingresos",
+      "deductions": "Deducciones",
+      "tax": "Impuesto",
+      "balance": "Liquidación"
+    },
+    "cells": {
+      "laboral": "Ingresos laborales",
+      "capital": "Ingresos de capital",
+      "no_domiciliados": "No constitutivos de renta",
+      "rentas_exentas": "Rentas exentas",
+      "deducciones": "Deducciones",
+      "renta_liquida": "Renta líquida",
+      "impuesto": "Impuesto de renta",
+      "anticipos": "Anticipos y retenciones",
+      "saldo": "Saldo a pagar / (a favor)"
+    },
+    "prepare": "Preparar borrador",
+    "preparing": "Calculando…",
+    "ready": "Borrador listo (demo)",
+    "explain": "Explicar casilla",
+    "evidence": "Evidencia",
+    "demoValues": "Valores sintéticos de demostración"
+  }
+}

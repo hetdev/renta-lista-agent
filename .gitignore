@@ -38,3 +38,7 @@ infra/.cdk.staging/
 tmp/
 *.log
 .aws-sam/
+dist/
+frontend/node_modules/
+frontend/out/
+frontend/.next/

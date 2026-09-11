@@ -6,6 +6,7 @@ from uuid import UUID
 from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
 
+from rentalista.api.demo_portal import router as demo_portal_router
 from rentalista.api.store import (
     ConflictError,
     InMemoryStore,
@@ -21,6 +22,7 @@ from rentalista.domain.models import TaxpayerProfile
 
 store = InMemoryStore()
 app = FastAPI(title="RentaLista API", version="0.1.0")
+app.include_router(demo_portal_router)
 
 
 class ProfileIn(BaseModel):

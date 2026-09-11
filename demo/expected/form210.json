@@ -1,0 +1,19 @@
+{
+  "description": "Golden Form 210 draft for the synthetic case (engine output snapshot)",
+  "rule_version": "ag2025-0.1.0",
+  "tax_year": 2025,
+  "must_file": true,
+  "inputs": {
+    "patrimonio_bruto": 250000000,
+    "deudas": 50000000,
+    "ingresos_brutos": 82000000,
+    "salarios": 80000000,
+    "aportes_salud_pension": 8000000,
+    "rendimientos_financieros": 2000000,
+    "retenciones_fuente": 5000000,
+    "compras_factura_electronica": 10000000,
+    "dependents": 1,
+    "previous_filing": "FIRST"
+  },
+  "notes": "Expected values are filled by tests/golden/test_golden_form210.py via the deterministic engine. Re-validate against Programa Ayuda Renta once before freeze."
+}
