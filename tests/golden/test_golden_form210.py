@@ -72,6 +72,7 @@ def test_golden_form210_deterministic_and_stable() -> None:
     assert snapshot["cells"]["34"] == 72 * 49_799  # 72 UVT dependiente trabajo
     assert snapshot["cells"]["140"] == 0
     assert snapshot["cells"]["134"] * snapshot["cells"]["137"] == 0
-    assert snapshot["cells"]["116"] == 279_743
+    # art. 577: rounded to thousands
+    assert snapshot["cells"]["116"] == 280_000
     assert snapshot["saldo_a_pagar"] == 0
-    assert snapshot["saldo_a_favor"] == 4_720_257  # retenciones - impuesto
+    assert snapshot["saldo_a_favor"] == 4_720_000

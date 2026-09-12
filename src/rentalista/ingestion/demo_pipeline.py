@@ -125,3 +125,27 @@ def run_pipeline(
         "draft": draft,
     }
     return payload, criteria
+
+
+def default_demo_amounts() -> dict[str, int]:
+    """Amounts from the repo fixtures — used by API PREPARE_DRAFT when none are posted."""
+    root = Path(__file__).resolve().parents[3]
+    xlsx = root / "demo" / "fixtures" / "reporteExogena2025_demo.xlsx"
+    pdf = root / "demo" / "fixtures" / "nequi_retencion_demo.pdf"
+    if not xlsx.exists() or not pdf.exists():
+        return {}
+    rows = read_exogenous_xlsx(xlsx)
+    facts = extract_nequi_facts(pdf)
+    m = map_amounts(rows, facts)
+    return {
+        "patrimonio_bruto": m["patrimonio"],
+        "deudas": 0,
+        "ingresos_brutos": m["ingresos"],
+        "salarios": m["salarios"],
+        "aportes_salud_pension": m["aportes"],
+        "rendimientos_financieros": m["rendimientos"],
+        "no_constitutivos_capital": m["no_const"],
+        "retenciones_fuente": m["retenciones"],
+        "intereses_vivienda": m["intereses_vivienda"],
+        "compras_factura_electronica": m["compras_factura"],
+    }

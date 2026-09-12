@@ -1,9 +1,16 @@
 from __future__ import annotations
 
+from decimal import Decimal
 from typing import Literal
 
 from rentalista.domain.models import CellResult, ConfirmedTaxFacts, Draft210
-from rentalista.domain.money import COP, require_non_negative, safe_sub, uvt_2025
+from rentalista.domain.money import (
+    COP,
+    require_non_negative,
+    round_thousands,
+    safe_sub,
+    uvt_2025,
+)
 from rentalista.tax.deductions import (
     cell_92_rentas_exentas,
     dependent_adition,
@@ -27,12 +34,17 @@ def _cell(number: int, label: str, amount: COP, formula: str, **operands: object
 
 
 def _advance_factor(previous: Literal["FIRST", "SECOND", "LATER"]) -> tuple[int, str]:
-    """Anticipo: first filing 0%, second 10%, later 25% of prior-year tax (placeholder)."""
+    """ET art. 807: anticipo = % of prior-year net tax by years of liquidación.
+
+    FIRST → primera declaración (sin año anterior, 0 declarado).
+    SECOND → 2 años de funcionamiento al liquidar el anterior → 25%.
+    LATER → más de dos años → 75% (el 50% aplica solo en la transición de 2 años).
+    """
     if previous == "FIRST":
         return 0, "0%"
     if previous == "SECOND":
-        return 10, "10%"
-    return 25, "25%"
+        return 25, "25%"
+    return 75, "75%"
 
 
 def calculate_form210(facts: ConfirmedTaxFacts, *, rule_version: str) -> Draft210:
@@ -187,7 +199,7 @@ def calculate_form210(facts: ConfirmedTaxFacts, *, rule_version: str) -> Draft21
     saldo_favor_anterior = amounts.get("saldo_a_favor_anterior", COP(0))
     prior_tax = amounts.get("impuesto_anio_anterior", COP(0))
     factor_pct, factor_label = _advance_factor(facts.previous_filing)
-    _ = prior_tax, factor_pct  # reserved for suggested-advance cross-check
+    anticipo_sugerido = COP(int(Decimal(prior_tax) * factor_pct / 100))
 
     cells[130] = _cell(
         130,
@@ -195,20 +207,39 @@ def calculate_form210(facts: ConfirmedTaxFacts, *, rule_version: str) -> Draft21
         anticipo_anterior,
         f"declarado; factor {factor_label}",
     )
-    cells[131] = _cell(131, "Saldo a favor año anterior", saldo_favor_anterior, "declared")
+    cells[131] = _cell(131, "Saldo a favor año anterior", saldo_favor_anterior, "declarado")
     cells[132] = _cell(132, "Retenciones año gravable", retenciones, "sum(retenciones)")
-    # 140 / 141
+    cells[135] = _cell(
+        135,
+        "Anticipo declarado (art. 807)",
+        anticipo_anterior,
+        f"{factor_label} × impuesto neto año anterior; sugerido {anticipo_sugerido}",
+        sugerido=anticipo_sugerido,
+    )
+    cells[136] = _cell(136, "Sanciones", amounts.get("sanciones", COP(0)), "fuera de alcance MVP")
     cells[140] = _cell(140, "Marca tope art. 336-1", COP(0), "no aplica al perfil admitido")
     cells[141] = _cell(
         141, "Aporte voluntario", amounts.get("aporte_voluntario", COP(0)), "cero salvo decisión"
     )
 
+    # Art. 577 ET: round key presentation amounts to the nearest 1,000 COP.
+    impuesto_r = round_thousands(impuesto)
+    retenciones_r = round_thousands(retenciones)
+    anticipo_r = round_thousands(anticipo_anterior)
+    saldo_favor_r = round_thousands(saldo_favor_anterior)
+    cells[116] = _cell(116, "Impuesto neto de renta", impuesto_r, "tarifa art. 241; red. mil")
+    cells[132] = _cell(132, "Retenciones año gravable", retenciones_r, "sum; red. mil")
+    cells[130] = _cell(130, "Anticipo renta año anterior", anticipo_r, "declarado; red. mil")
+    cells[131] = _cell(131, "Saldo a favor año anterior", saldo_favor_r, "declarado; red. mil")
+
     saldo_pagar, saldo_favor = net_payable(
-        impuesto, retenciones, anticipo_anterior, saldo_favor_anterior
+        impuesto_r, retenciones_r, anticipo_r, saldo_favor_r
     )
+    saldo_pagar = round_thousands(saldo_pagar)
+    saldo_favor = round_thousands(saldo_favor)
     assert_saldo_invariants(saldo_pagar, saldo_favor)
-    cells[134] = _cell(134, "Total saldo a pagar", saldo_pagar, "max(impuesto-créditos, 0)")
-    cells[137] = _cell(137, "Total saldo a favor", saldo_favor, "max(créditos-impuesto, 0)")
+    cells[134] = _cell(134, "Total saldo a pagar", saldo_pagar, "red. mil")
+    cells[137] = _cell(137, "Total saldo a favor", saldo_favor, "red. mil")
 
     return Draft210(
         rule_version=rule_version,

@@ -49,3 +49,11 @@ def safe_sub(a: COP, b: COP) -> COP:
 def percent_of(amount: COP, percent: Decimal) -> COP:
     raw = Decimal(amount) * percent / Decimal(100)
     return COP(int(raw.quantize(Decimal("1"), rounding=ROUND_HALF_UP)))
+
+
+def round_thousands(amount: COP) -> COP:
+    """Art. 577 ET: presentation amounts rounded to the nearest 1,000 COP."""
+    if amount == 0:
+        return COP(0)
+    raw = Decimal(amount) / Decimal(1000)
+    return COP(int(raw.quantize(Decimal("1"), rounding=ROUND_HALF_UP)) * 1000)

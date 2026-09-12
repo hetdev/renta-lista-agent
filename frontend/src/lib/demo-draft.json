@@ -3,7 +3,7 @@
   "status": "DRAFT_READY",
   "must_file": true,
   "saldo_a_pagar": 0,
-  "saldo_a_favor": 3708977,
+  "saldo_a_favor": 3709000,
   "blockers": [],
   "cells": {
     "29": {
@@ -99,8 +99,8 @@
     "116": {
       "cell": 116,
       "label": "Impuesto neto de renta",
-      "amount_cop": 926023,
-      "formula": "tarifa art. 241"
+      "amount_cop": 926000,
+      "formula": "tarifa art. 241; red. mil"
     },
     "99": {
       "cell": 99,
@@ -124,19 +124,31 @@
       "cell": 130,
       "label": "Anticipo renta año anterior",
       "amount_cop": 0,
-      "formula": "declarado; factor 0%"
+      "formula": "declarado; red. mil"
     },
     "131": {
       "cell": 131,
       "label": "Saldo a favor año anterior",
       "amount_cop": 0,
-      "formula": "declared"
+      "formula": "declarado; red. mil"
     },
     "132": {
       "cell": 132,
       "label": "Retenciones año gravable",
       "amount_cop": 4635000,
-      "formula": "sum(retenciones)"
+      "formula": "sum; red. mil"
+    },
+    "135": {
+      "cell": 135,
+      "label": "Anticipo declarado (art. 807)",
+      "amount_cop": 0,
+      "formula": "0% × impuesto neto año anterior; sugerido 0"
+    },
+    "136": {
+      "cell": 136,
+      "label": "Sanciones",
+      "amount_cop": 0,
+      "formula": "fuera de alcance MVP"
     },
     "140": {
       "cell": 140,
@@ -154,13 +166,13 @@
       "cell": 134,
       "label": "Total saldo a pagar",
       "amount_cop": 0,
-      "formula": "max(impuesto-créditos, 0)"
+      "formula": "red. mil"
     },
     "137": {
       "cell": 137,
       "label": "Total saldo a favor",
-      "amount_cop": 3708977,
-      "formula": "max(créditos-impuesto, 0)"
+      "amount_cop": 3709000,
+      "formula": "red. mil"
     }
   }
 }

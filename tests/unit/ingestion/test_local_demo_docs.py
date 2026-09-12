@@ -34,11 +34,11 @@ def test_demo_pipeline_numbers() -> None:
     assert cells["33"]["amount_cop"] == 11_951_760  # 25% cap 240 UVT
     assert cells["34"]["amount_cop"] == 72 * 49_799  # 72 UVT dependiente
     assert cells["93"]["amount_cop"] == 59_154_714
-    assert cells["116"]["amount_cop"] == 926_023
+    assert cells["116"]["amount_cop"] == 926_000  # art. 577 redondeo a mil
     assert cells["132"]["amount_cop"] == 4_635_000
-    assert cells["92"]["amount_cop"] == 7_529_468  # vivienda + c28 + c139
+    assert cells["92"]["amount_cop"] == 7_529_468
     assert draft["saldo_a_pagar"] == 0
-    assert draft["saldo_a_favor"] == 3_708_977
+    assert draft["saldo_a_favor"] == 3_709_000
 
 
 def test_demo_jsons_match_engine() -> None:

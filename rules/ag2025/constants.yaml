@@ -11,6 +11,12 @@ labor_no_const_pct: 25
 labor_no_const_max_uvt: 240
 dependent_labor_uvt: 72
 dependent_labor_max: 4
+# ET art. 807: anticipo as % of prior-year net tax
+anticipo_first_pct: 0
+anticipo_second_pct: 25
+anticipo_later_pct: 75
+# ET art. 577: round presentation to nearest 1000 COP
+round_to_thousands: true
 patrimonio_bruto_uvt: 4500
 patrimonio_bruto_op: ">"
 ingresos_brutos_uvt: 1400

@@ -18,7 +18,7 @@ from rentalista.api.store import (
     get_job,
     save_profile,
 )
-from rentalista.domain.enums import AgentCommand, JobStatus
+from rentalista.domain.enums import AgentCommand, CaseStatus, JobStatus
 from rentalista.domain.models import TaxpayerProfile
 
 store = InMemoryStore()
@@ -119,6 +119,7 @@ def post_job(
     case = store.cases[case_id]
     if body.command is AgentCommand.PREPARE_DRAFT and case.profile is not None:
         from rentalista.agent.schemas import run_command
+        from rentalista.ingestion.demo_pipeline import default_demo_amounts
 
         try:
             result = run_command(
@@ -127,10 +128,12 @@ def post_job(
                     "case_id": str(case_id),
                     "job_id": str(job["job_id"]),
                     "profile": case.profile.model_dump(),
-                    "amounts": {},
-                    "dependents": case.profile.dependents_confirmed,
+                    "amounts": default_demo_amounts(),
+                    "dependents": case.profile.dependents_confirmed or 1,
                 }
             )
+            case.draft_version = (case.draft_version or 0) + 1
+            case.status = CaseStatus.DRAFT_READY if not result.get("blockers") else CaseStatus.NEEDS_REVIEW
             complete_job(
                 store, job["job_id"], status=JobStatus.SUCCEEDED, stage=str(result.get("status"))
             )
