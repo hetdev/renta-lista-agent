@@ -118,10 +118,12 @@ function DraftPanel({
   }
 
   function prepare() {
+    if (!caseId) return;
+    const id = caseId;
     setBusy(true);
     window.setTimeout(() => {
       setDraft(ENGINE_DRAFT);
-      saveCaseBlob(caseId, "draft", ENGINE_DRAFT);
+      saveCaseBlob(id, "draft", ENGINE_DRAFT);
       setBusy(false);
     }, 400);
   }

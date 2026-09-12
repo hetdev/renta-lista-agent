@@ -131,7 +131,11 @@ def complete_job(
     job["error"] = error
     job["updated_at"] = _utcnow()
     case = store.cases[job["case_id"]]
-    if case.active_job_id == job_id and status in {JobStatus.SUCCEEDED, JobStatus.FAILED, JobStatus.WAITING_USER}:
+    if case.active_job_id == job_id and status in {
+        JobStatus.SUCCEEDED,
+        JobStatus.FAILED,
+        JobStatus.WAITING_USER,
+    }:
         release_lock_for_waiting(store, job["case_id"], job_id)
 
 
