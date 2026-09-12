@@ -119,8 +119,8 @@ cd frontend && npm run build
 | # | Hallazgo | Dónde | Acción |
 |---|---|---|---|
 | B1 | ~~Tabla art. 241 con impuesto fijo 0/19/135/803/2.307/5.912/10.391 UVT~~ **RESUELTO 11 sep:** ambos archivos con 0/0/116/788/2.296/5.901/10.352, límites exclusivos como el estatuto, redondeo HALF_UP. `tests/unit/tax/test_rates.py`: igualdad con art. 241 y con el YAML, continuidad por tramo, valores conocidos, barrido monótono. JSONs regenerados | `src/rentalista/tax/rates.py`, `rules/ag2025/tax_table.yaml` | Pendiente solo el redeploy del frontend |
-| B2 | No se calcula el 25 % exento laboral (art. 206 num. 10, tope 790 UVT); en el demo unos 20 M fuera de la base | `src/rentalista/tax/form210.py:123` | Implementar o declarar "no calculado" en UI y DOC |
-| B3 | c139 usa 52,4 UVT por dependiente; art. 336 num. 3 dice 72 UVT (verificar contra el instructivo) | `src/rentalista/tax/deductions.py:56` | Corregir tras verificar |
+| B2 | ~~No se calcula el 25 % exento laboral~~ **RESUELTO 12 sep:** `min(25% c32, 240 UVT)` en casilla 33 (`labor_no_constitutive_25`). Nota: el review citaba tope 790 UVT (art. 206 num. 10); se usó 240 UVT (num. 8 clásico). Verificar contra el instructivo si el perfil lo amerita | `src/rentalista/tax/deductions.py`, `form210.py` | Hecho |
+| B3 | ~~c139 52,4 UVT / falta 72 UVT trabajo~~ **RESUELTO 12 sep:** deducción **72 UVT × min(deps,4)** en la cédula de trabajo (casilla 34, `dependent_labor_deduction`). c139 sigue siendo la *adición* 10%×524 UVT a c92 (otra regla, no la misma) | `src/rentalista/tax/deductions.py` | Hecho |
 | B4 | Sin aproximación al múltiplo de mil (art. 577 ET); faltan c135 anticipo y c136 sanciones | `src/rentalista/tax/form210.py` | Añadir |
 | B5 | `PREPARE_DRAFT` por API corre con `amounts={}`, no guarda ni expone el borrador; el caso queda en PROFILED (reproducido) | `src/rentalista/api/main.py:119` | Ingerir fixtures en servidor, guardar draft, `GET draft`, transición a DRAFT_READY |
 | B6 | Sin endpoints de subida, cobertura, portal, consentimiento, recuperación, exportación | `src/rentalista/api/main.py` | Cablear lo mínimo o rebajar README (hecho el 11 sep) |
@@ -164,7 +164,8 @@ UI draft alimentada por JSON del engine · jobs PREPARE_DRAFT ya no quedan en AC
 | # | Ítem | Estado | Notas |
 |---|---|---|---|
 | 1 | Corregir tabla art. 241 y regenerar números (B1) | **HECHO 11 sep** (sin commit) | Falta `npm run build` + subir a S3 + invalidar CloudFront para que la URL pública muestre saldo a favor 756.893 |
-| 2 | Decidir 25 % exento y 72 UVT (B2, B3) | **FALTA** | Implementar o declarar "no calculado" |
+| 2 | Decidir 25 % exento y 72 UVT (B2, B3) | **HECHO 12 sep** | c33 = 25% (tope 240 UVT); c34 = 72 UVT/dep. Demo: impuesto 926.023, saldo a favor 3.708.977 |
+| 2b | Redeploy frontend a S3 + CloudFront con los nuevos números | HECHO 12 sep | Verificar en `/es/case/draft/` |
 | 3 | Banner DIAN en la UI (B9) | FALTA | Lo exige el guion |
 | 4 | Cablear un camino real API a draft o dejar el README rebajado (B5, B6) | FALTA | README ya rebajado el 11 sep |
 | 5 | Live View: quitar guarda `API_BASE`; 404 solo en origen S3; behavior `/demo-portal/*` (B7, M1, M2) | FALTA | Solo si sale en el video |
