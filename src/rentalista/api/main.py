@@ -134,7 +134,9 @@ def post_job(
                 store, job["job_id"], status=JobStatus.SUCCEEDED, stage=str(result.get("status"))
             )
         except Exception as exc:  # noqa: BLE001
-            complete_job(store, job["job_id"], status=JobStatus.FAILED, stage="failed", error=str(exc))
+            complete_job(
+                store, job["job_id"], status=JobStatus.FAILED, stage="failed", error=str(exc)
+            )
     return {
         "job_id": str(job["job_id"]),
         "status": str(job["status"]),
@@ -159,3 +161,28 @@ def read_job(
         "stage": job["stage"],
         "error": job["error"],
     }
+
+
+@app.get("/api/v1/cases/{case_id}/browser-sessions/{session_id}/live-view")
+def live_view(
+    case_id: UUID,
+    session_id: str,
+    x_case_token: str = Header(default=""),
+) -> dict[str, Any]:
+    try:
+        get_case_for_token(store, case_id, x_case_token)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="case not found") from exc
+    from rentalista.config import get_settings
+
+    settings = get_settings()
+    try:
+        from bedrock_agentcore.tools.browser_client import BrowserClient
+
+        client = BrowserClient(region=settings.aws_region)
+        client.identifier = "aws.browser.v1"
+        client.session_id = session_id
+        url = client.generate_live_view_url(expires=300)
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(status_code=503, detail=f"live view unavailable: {exc}") from exc
+    return {"url": url, "expires_in": 300, "session_id": session_id}
