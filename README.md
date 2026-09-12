@@ -26,7 +26,9 @@ See [docs/architecture.mmd](docs/architecture.mmd).
 - **Browser** `aws.browser.v1` sessions for Live View + OTP handoff  
 - **Amazon Bedrock** model `amazon.nova-micro-v1:0` (us-east-1)  
 - Deterministic tax engine in `src/rentalista/tax/`  
-- Synthetic demo portal at `/demo-portal/*`  
+- Synthetic demo portal at `/demo-portal/*`
+- Public API: `https://deuhmh4dvlr6i.cloudfront.net/api/v1/`
+- Demo exogenous + Nequi fixtures under `demo/fixtures/` (must_file draft, saldo 189.288 COP)  
 
 ### Deployed resources (us-east-1)
 

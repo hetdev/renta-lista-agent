@@ -7,7 +7,9 @@ from pypdf import PdfReader
 
 from rentalista.domain.money import COP, cop_from_str
 
-_MONEY = re.compile(r"\$?\s*([0-9]{1,3}(?:[.,][0-9]{3})*(?:[.,][0-9]{1,2})?|[0-9]+(?:[.,][0-9]{1,2})?)")
+_MONEY = re.compile(
+    r"\$?\s*([0-9]{1,3}(?:[.,][0-9]{3})*(?:[.,][0-9]{1,2})?|[0-9]+(?:[.,][0-9]{1,2})?)"
+)
 
 
 def _parse_money(raw: str) -> COP:
@@ -22,10 +24,11 @@ def _parse_money(raw: str) -> COP:
             s = s.replace(",", "")
     elif "," in s:
         parts = s.split(",")
-        if len(parts[-1]) == 2:
-            s = s.replace(".", "").replace(",", ".")
-        else:
-            s = s.replace(",", "")
+        s = (
+            s.replace(".", "").replace(",", ".")
+            if len(parts[-1]) == 2
+            else s.replace(",", "")
+        )
     return cop_from_str(s)
 
 
