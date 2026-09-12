@@ -164,7 +164,7 @@ UI draft alimentada por JSON del engine · jobs PREPARE_DRAFT ya no quedan en AC
 | # | Ítem | Estado | Notas |
 |---|---|---|---|
 | 1 | Corregir tabla art. 241 y regenerar números (B1) | **HECHO 11 sep** (sin commit) | Falta `npm run build` + subir a S3 + invalidar CloudFront para que la URL pública muestre saldo a favor 756.893 |
-| 2 | Decidir 25 % exento y 72 UVT (B2, B3) | **HECHO 12 sep** | c33 = 25% (tope 240 UVT); c34 = 72 UVT/dep. Demo: impuesto 926.023, saldo a favor 3.708.977 |
+| 2 | Decidir 25 % exento y 72 UVT (B2, B3) | **HECHO 12 sep** | c33 = 25% (tope 240 UVT); c34 = 72 UVT/dep. Demo: impuesto 926.000, saldo a favor 3.709.000 |
 | 2b | Redeploy frontend a S3 + CloudFront con los nuevos números | HECHO 12 sep | Verificar en `/es/case/draft/` |
 | 3 | Banner DIAN en la UI (B9) | FALTA | Lo exige el guion |
 | 4 | Cablear un camino real API a draft o dejar el README rebajado (B5, B6) | FALTA | README ya rebajado el 11 sep |
