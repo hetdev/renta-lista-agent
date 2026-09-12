@@ -133,7 +133,9 @@ def post_job(
                 }
             )
             case.draft_version = (case.draft_version or 0) + 1
-            case.status = CaseStatus.DRAFT_READY if not result.get("blockers") else CaseStatus.NEEDS_REVIEW
+            case.status = (
+                CaseStatus.DRAFT_READY if not result.get("blockers") else CaseStatus.NEEDS_REVIEW
+            )
             complete_job(
                 store, job["job_id"], status=JobStatus.SUCCEEDED, stage=str(result.get("status"))
             )
