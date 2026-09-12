@@ -37,7 +37,9 @@ def map_amounts(rows: list[dict], pdf: dict) -> dict[str, int]:
             acc["ingresos"] += amt
         if "retención" in concept or "retencion" in concept:
             acc["retenciones"] += amt
-        if "aporte" in concept and ("salud" in concept or "pensión" in concept or "pension" in concept):
+        if "aporte" in concept and (
+            "salud" in concept or "pensión" in concept or "pension" in concept
+        ):
             acc["aportes"] += amt
         if "vivienda" in concept:
             acc["intereses_vivienda"] += amt
@@ -115,7 +117,9 @@ def main() -> int:
         }
     )
     print(f"draft status={out['status']} must_file={out['must_file']}")
-    print(f"saldo_a_pagar={out['saldo_a_pagar']} saldo_a_favor={out['saldo_a_favor']}")
+    print(
+        f"saldo_a_pagar={out['saldo_a_pagar']} saldo_a_favor={out['saldo_a_favor']}"
+    )
     print(f"blockers={out['blockers']}")
     for k in ("28", "29", "31", "32", "39", "58", "92", "93", "111", "116", "132", "134", "137", "139"):
         if k in out["cells"]:
