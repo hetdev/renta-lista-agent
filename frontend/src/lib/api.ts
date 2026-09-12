@@ -1,6 +1,7 @@
 import { randomId, type CaseSession } from "./case-session";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:8000";
+// Empty = same origin (CloudFront /api/*). Override for local uvicorn.
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "";
 
 export type CreateCaseResponse = {
   case_id: string;
