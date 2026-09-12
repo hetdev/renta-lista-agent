@@ -121,7 +121,10 @@ def main() -> int:
         f"saldo_a_pagar={out['saldo_a_pagar']} saldo_a_favor={out['saldo_a_favor']}"
     )
     print(f"blockers={out['blockers']}")
-    cells_show = ("28", "29", "31", "32", "39", "58", "92", "93", "111", "116", "132", "134", "137", "139")
+    cells_show = (
+        "28", "29", "31", "32", "39", "58", "92", "93",
+        "111", "116", "132", "134", "137", "139",
+    )
     for k in cells_show:
         if k in out["cells"]:
             cell = out["cells"][k]
