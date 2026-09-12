@@ -21,10 +21,25 @@ Helps a Colombian tax-resident natural person gather missing certificates, recon
 See [docs/architecture.mmd](docs/architecture.mmd).
 
 - **Strands Agents** orchestrates tools  
-- **Amazon Bedrock AgentCore** Runtime + Gateway Web Search + Browser  
+- **Amazon Bedrock AgentCore** Runtime `rentalista_agent` (READY)  
+- **Gateway** `rentalista-websearch2` with **Web Search Tool** target (READY)  
+- **Browser** `aws.browser.v1` sessions for Live View + OTP handoff  
 - **Amazon Bedrock** model `amazon.nova-micro-v1:0` (us-east-1)  
 - Deterministic tax engine in `src/rentalista/tax/`  
 - Synthetic demo portal at `/demo-portal/*`  
+
+### Deployed resources (us-east-1)
+
+| Resource | Id / URL |
+|---|---|
+| Web (CloudFront) | `https://deuhmh4dvlr6i.cloudfront.net/` |
+| Web bucket | `rentalista-web-697020387519` |
+| AgentCore Runtime | `rentalista_agent-xznI3y9jcZ` |
+| AgentCore Gateway | `rentalista-websearch2-f29eutucy6` |
+| Web Search target | `DP0IKFORKR` (connector `web-search` 1.2.0) |
+| Bedrock model | `amazon.nova-micro-v1:0` |
+
+Live View URL is generated per session (`max 300s`). Browser session timeout: 1800s.
 
 ## Quick start
 
