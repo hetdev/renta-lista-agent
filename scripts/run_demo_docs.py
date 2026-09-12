@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Run the agent pipeline on real demo documents (local only — not committed).
+"""Run the agent pipeline on demo documents (DIAN xlsx + Nequi PDF).
 
 Usage:
   uv run python scripts/run_demo_docs.py \
-    --xlsx /path/reporteExogena2025demo.xlsx \
-    --pdf  /path/nequi_unlocked.pdf
+    --xlsx demo/fixtures/reporteExogena2025_demo.xlsx \
+    --pdf  demo/fixtures/nequi_retencion_demo.pdf
 """
 from __future__ import annotations
 
@@ -20,6 +20,36 @@ from rentalista.ingestion.pdf_facts import extract_nequi_facts
 from rentalista.tax.obligation import evaluate_obligation
 
 
+def map_amounts(rows: list[dict], pdf: dict) -> dict[str, int]:
+    acc = defaultdict(int)
+    for r in rows:
+        use = str(r.get("suggested_use") or "")
+        concept = str(r.get("concept") or "").lower()
+        amt = int(r["amount_cop"])
+        if ("R29" in use or "Patrimonio Bruto" in use) and "saldo" in concept:
+            acc["patrimonio"] += amt
+        if "Tope 4" in use or "consignaciones" in use.lower():
+            acc["consignaciones"] += amt
+        if "salario" in concept:
+            acc["salarios"] += amt
+            acc["ingresos"] += amt
+        elif ("rendimiento" in concept or "intereses" in concept) and "tope 1" in use.lower():
+            acc["ingresos"] += amt
+        if "retención" in concept or "retencion" in concept:
+            acc["retenciones"] += amt
+        if "aporte" in concept and ("salud" in concept or "pensión" in concept or "pension" in concept):
+            acc["aportes"] += amt
+        if "vivienda" in concept:
+            acc["intereses_vivienda"] += amt
+        if "factura electrónica" in concept or "factura electronica" in concept:
+            acc["compras_factura"] += amt
+    acc["patrimonio"] += int(pdf.get("saldo_cuenta") or 0)
+    acc["rendimientos"] = int(pdf.get("rendimientos_intereses") or 0)
+    acc["no_const"] = int(pdf.get("no_constitutivos") or 0)
+    acc["ingresos"] += acc["rendimientos"]
+    return acc
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--xlsx", required=True, type=Path)
@@ -32,33 +62,16 @@ def main() -> int:
     print(f"exogenous rows: {len(rows)}")
     print(f"nequi facts: {json.dumps({k: str(v) for k, v in pdf.items()}, ensure_ascii=False)}")
 
-    patrimonio = 0
-    ingresos = 0
-    consignaciones = 0
-    by_reporter: dict[str, int] = defaultdict(int)
-    for r in rows:
-        use = str(r.get("suggested_use") or "")
-        concept = str(r.get("concept") or "").lower()
-        amt = int(r["amount_cop"])
-        by_reporter[str(r.get("reporter") or "")] += amt
-        if "R29" in use or "Patrimonio Bruto" in use:
-            if "saldo" in concept:
-                patrimonio += amt
-        if "Tope 4" in use or "consignaciones" in use.lower():
-            consignaciones += amt
-        if "ingreso" in concept or "salario" in concept:
-            ingresos += amt
-    patrimonio += int(pdf.get("saldo_cuenta") or 0)
-    rend = int(pdf.get("rendimientos_intereses") or 0)
-    no_const = int(pdf.get("no_constitutivos") or 0)
+    m = map_amounts(rows, pdf)
+    print("mapped:", dict(m))
 
     must, criteria = evaluate_obligation(
         iva_responsible=False,
-        patrimonio_bruto=patrimonio,
-        ingresos_brutos=ingresos,
+        patrimonio_bruto=m["patrimonio"],
+        ingresos_brutos=m["ingresos"],
         consumos_tarjeta=0,
         compras_consumos=0,
-        consignaciones=consignaciones,
+        consignaciones=m["consignaciones"],
     )
     print(f"must_file={must}")
     for c in criteria:
@@ -86,34 +99,42 @@ def main() -> int:
                 },
             },
             "amounts": {
-                "patrimonio_bruto": patrimonio,
+                "patrimonio_bruto": m["patrimonio"],
                 "deudas": 0,
-                "ingresos_brutos": ingresos,
-                "salarios": 0,
-                "rendimientos_financieros": rend,
-                "no_constitutivos_capital": no_const,
-                "retenciones_fuente": 0,
+                "ingresos_brutos": m["ingresos"],
+                "salarios": m["salarios"],
+                "aportes_salud_pension": m["aportes"],
+                "rendimientos_financieros": m["rendimientos"],
+                "no_constitutivos_capital": m["no_const"],
+                "retenciones_fuente": m["retenciones"],
+                "intereses_vivienda": m["intereses_vivienda"],
+                "compras_factura_electronica": m["compras_factura"],
             },
-            "dependents": 0,
+            "dependents": 1,
             "previous_filing": "FIRST",
         }
     )
     print(f"draft status={out['status']} must_file={out['must_file']}")
     print(f"saldo_a_pagar={out['saldo_a_pagar']} saldo_a_favor={out['saldo_a_favor']}")
     print(f"blockers={out['blockers']}")
-    for k in ("29", "31", "58", "92", "93", "111", "116", "134", "137"):
+    for k in ("28", "29", "31", "32", "39", "58", "92", "93", "111", "116", "132", "134", "137", "139"):
         if k in out["cells"]:
             cell = out["cells"][k]
             print(f"  c{k}: {cell['amount_cop']} — {cell['label']}")
 
     if args.json_out:
+        by_reporter: dict[str, int] = defaultdict(int)
+        for r in rows:
+            by_reporter[str(r.get("reporter") or "")] += int(r["amount_cop"])
         payload = {
             "exogenous_rows": len(rows),
+            "mapped": dict(m),
             "by_reporter": dict(by_reporter),
             "nequi": {k: str(v) for k, v in pdf.items()},
             "obligation": must,
             "draft": out,
         }
+        args.json_out.parent.mkdir(parents=True, exist_ok=True)
         args.json_out.write_text(json.dumps(payload, indent=2, ensure_ascii=False))
         print(f"wrote {args.json_out}")
     return 0

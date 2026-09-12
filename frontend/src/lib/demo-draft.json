@@ -1,33 +1,33 @@
 {
-  "case_id": "4310aa19-c052-485f-8e9f-f2746bcca8bd",
+  "case_id": "5999c0dd-7ba6-404e-b136-823090bed027",
   "status": "DRAFT_READY",
   "must_file": true,
-  "saldo_a_pagar": 0,
-  "saldo_a_favor": 821991,
+  "saldo_a_pagar": 189288,
+  "saldo_a_favor": 0,
   "blockers": [],
   "cells": {
     "29": {
       "cell": 29,
       "label": "Patrimonio bruto",
-      "amount_cop": 250000000,
+      "amount_cop": 186887300,
       "formula": "sum(activos)"
     },
     "30": {
       "cell": 30,
       "label": "Deudas",
-      "amount_cop": 50000000,
+      "amount_cop": 0,
       "formula": "sum(pasivos)"
     },
     "31": {
       "cell": 31,
       "label": "Patrimonio líquido",
-      "amount_cop": 200000000,
+      "amount_cop": 186887300,
       "formula": "max(c29-c30, 0)"
     },
     "32": {
       "cell": 32,
       "label": "Ingresos brutos rentas de trabajo",
-      "amount_cop": 80000000,
+      "amount_cop": 89250000,
       "formula": "salarios+otros"
     },
     "36": {
@@ -39,19 +39,19 @@
     "39": {
       "cell": 39,
       "label": "Aportes salud y pensión",
-      "amount_cop": 8000000,
+      "amount_cop": 7200000,
       "formula": "aportes obligatorios"
     },
     "58": {
       "cell": 58,
       "label": "Ingresos brutos rentas de capital",
-      "amount_cop": 2000000,
+      "amount_cop": 384670,
       "formula": "rendimientos nacionales"
     },
     "28": {
       "cell": 28,
       "label": "1% compras con factura electrónica",
-      "amount_cop": 100000,
+      "amount_cop": 120000,
       "formula": "min(1% compras, 240 UVT)"
     },
     "138": {
@@ -69,25 +69,25 @@
     "92": {
       "cell": 92,
       "label": "Rentas exentas y deducciones limitadas",
-      "amount_cop": 2709468,
+      "amount_cop": 7529468,
       "formula": "min(exentas+deducc, 40% y 1340 UVT) + c28 + c139"
     },
     "93": {
       "cell": 93,
       "label": "Renta líquida cédula general",
-      "amount_cop": 71290532,
+      "amount_cop": 74692002,
       "formula": "gravables - c92"
     },
     "111": {
       "cell": 111,
       "label": "Renta líquida gravable",
-      "amount_cop": 71290532,
+      "amount_cop": 74692002,
       "formula": "max(c93, 0)"
     },
     "116": {
       "cell": 116,
       "label": "Impuesto neto de renta",
-      "amount_cop": 4178009,
+      "amount_cop": 4824288,
       "formula": "tarifa art. 241"
     },
     "99": {
@@ -123,7 +123,7 @@
     "132": {
       "cell": 132,
       "label": "Retenciones año gravable",
-      "amount_cop": 5000000,
+      "amount_cop": 4635000,
       "formula": "sum(retenciones)"
     },
     "140": {
@@ -141,13 +141,13 @@
     "134": {
       "cell": 134,
       "label": "Total saldo a pagar",
-      "amount_cop": 0,
+      "amount_cop": 189288,
       "formula": "max(impuesto-créditos, 0)"
     },
     "137": {
       "cell": 137,
       "label": "Total saldo a favor",
-      "amount_cop": 821991,
+      "amount_cop": 0,
       "formula": "max(créditos-impuesto, 0)"
     }
   }
