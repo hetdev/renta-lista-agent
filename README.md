@@ -32,14 +32,16 @@ See [docs/architecture.mmd](docs/architecture.mmd).
 
 | Resource | Id / URL |
 |---|---|
-| Web (CloudFront) | `https://deuhmh4dvlr6i.cloudfront.net/` |
-| Web bucket | `rentalista-web-697020387519` |
+| **Live demo** | **https://deuhmh4dvlr6i.cloudfront.net/** |
+| ES / EN | `/es/` · `/en/` |
+| Web bucket (public website, synthetic only) | `rentalista-web-697020387519` |
 | AgentCore Runtime | `rentalista_agent-xznI3y9jcZ` |
 | AgentCore Gateway | `rentalista-websearch2-f29eutucy6` |
 | Web Search target | `DP0IKFORKR` (connector `web-search` 1.2.0) |
 | Bedrock model | `amazon.nova-micro-v1:0` |
 
-Live View URL is generated per session (`max 300s`). Browser session timeout: 1800s.
+Live View URL is generated per session (`max 300s`). Browser session timeout: 1800s.  
+Demo uses **synthetic data only** — no real taxpayer PII.
 
 ## Quick start
 
