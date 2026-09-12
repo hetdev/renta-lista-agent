@@ -174,26 +174,10 @@ def calculate_form210(facts: ConfirmedTaxFacts, *, rule_version: str) -> Draft21
     )
     cells[131] = _cell(131, "Saldo a favor año anterior", saldo_favor_anterior, "declared")
     cells[132] = _cell(132, "Retenciones año gravable", retenciones, "sum(retenciones)")
-    cells[134] = _cell(
-        134,
-        "Total saldo a pagar",
-        COP(0),
-        "max(impuesto - créditos, 0)",
-    )
-    cells[137] = _cell(137, "Total saldo a favor", COP(0), "max(créditos - impuesto, 0)")
-
     # 140 / 141
-    cells[140] = _cell(
-        140,
-        "Marca tope art. 336-1",
-        COP(0),
-        "no aplica al perfil admitido; sin marcar",
-    )
+    cells[140] = _cell(140, "Marca tope art. 336-1", COP(0), "no aplica al perfil admitido")
     cells[141] = _cell(
-        141,
-        "Aporte voluntario",
-        amounts.get("aporte_voluntario", COP(0)),
-        "cero salvo decisión expresa",
+        141, "Aporte voluntario", amounts.get("aporte_voluntario", COP(0)), "cero salvo decisión"
     )
 
     saldo_pagar, saldo_favor = net_payable(
@@ -202,9 +186,6 @@ def calculate_form210(facts: ConfirmedTaxFacts, *, rule_version: str) -> Draft21
     assert_saldo_invariants(saldo_pagar, saldo_favor)
     cells[134] = _cell(134, "Total saldo a pagar", saldo_pagar, "max(impuesto-créditos, 0)")
     cells[137] = _cell(137, "Total saldo a favor", saldo_favor, "max(créditos-impuesto, 0)")
-
-    if cells[134].amount_cop > 0 and cells[137].amount_cop > 0:
-        raise AssertionError("invariant: c134 and c137 cannot both be positive")
 
     return Draft210(
         rule_version=rule_version,

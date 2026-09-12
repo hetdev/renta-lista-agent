@@ -117,6 +117,24 @@ def create_job(
     return job
 
 
+def complete_job(
+    store: InMemoryStore,
+    job_id: UUID,
+    *,
+    status: JobStatus,
+    stage: str,
+    error: str | None = None,
+) -> None:
+    job = store.jobs[job_id]
+    job["status"] = status
+    job["stage"] = stage
+    job["error"] = error
+    job["updated_at"] = _utcnow()
+    case = store.cases[job["case_id"]]
+    if case.active_job_id == job_id and status in {JobStatus.SUCCEEDED, JobStatus.FAILED, JobStatus.WAITING_USER}:
+        release_lock_for_waiting(store, job["case_id"], job_id)
+
+
 def release_lock_for_waiting(store: InMemoryStore, case_id: UUID, job_id: UUID) -> None:
     case = store.cases[case_id]
     if case.active_job_id == job_id:

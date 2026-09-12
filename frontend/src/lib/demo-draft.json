@@ -1,0 +1,154 @@
+{
+  "case_id": "4310aa19-c052-485f-8e9f-f2746bcca8bd",
+  "status": "DRAFT_READY",
+  "must_file": true,
+  "saldo_a_pagar": 0,
+  "saldo_a_favor": 821991,
+  "blockers": [],
+  "cells": {
+    "29": {
+      "cell": 29,
+      "label": "Patrimonio bruto",
+      "amount_cop": 250000000,
+      "formula": "sum(activos)"
+    },
+    "30": {
+      "cell": 30,
+      "label": "Deudas",
+      "amount_cop": 50000000,
+      "formula": "sum(pasivos)"
+    },
+    "31": {
+      "cell": 31,
+      "label": "Patrimonio líquido",
+      "amount_cop": 200000000,
+      "formula": "max(c29-c30, 0)"
+    },
+    "32": {
+      "cell": 32,
+      "label": "Ingresos brutos rentas de trabajo",
+      "amount_cop": 80000000,
+      "formula": "salarios+otros"
+    },
+    "36": {
+      "cell": 36,
+      "label": "Otras rentas exentas trabajo",
+      "amount_cop": 0,
+      "formula": "confirmed_facts"
+    },
+    "39": {
+      "cell": 39,
+      "label": "Aportes salud y pensión",
+      "amount_cop": 8000000,
+      "formula": "aportes obligatorios"
+    },
+    "58": {
+      "cell": 58,
+      "label": "Ingresos brutos rentas de capital",
+      "amount_cop": 2000000,
+      "formula": "rendimientos nacionales"
+    },
+    "28": {
+      "cell": 28,
+      "label": "1% compras con factura electrónica",
+      "amount_cop": 100000,
+      "formula": "min(1% compras, 240 UVT)"
+    },
+    "138": {
+      "cell": 138,
+      "label": "Número de dependientes",
+      "amount_cop": 1,
+      "formula": "count"
+    },
+    "139": {
+      "cell": 139,
+      "label": "Adición por dependientes",
+      "amount_cop": 2609468,
+      "formula": "10% x 524 UVT x min(deps,4)"
+    },
+    "92": {
+      "cell": 92,
+      "label": "Rentas exentas y deducciones limitadas",
+      "amount_cop": 2709468,
+      "formula": "min(exentas+deducc, 40% y 1340 UVT) + c28 + c139"
+    },
+    "93": {
+      "cell": 93,
+      "label": "Renta líquida cédula general",
+      "amount_cop": 71290532,
+      "formula": "gravables - c92"
+    },
+    "111": {
+      "cell": 111,
+      "label": "Renta líquida gravable",
+      "amount_cop": 71290532,
+      "formula": "max(c93, 0)"
+    },
+    "116": {
+      "cell": 116,
+      "label": "Impuesto neto de renta",
+      "amount_cop": 4178009,
+      "formula": "tarifa art. 241"
+    },
+    "99": {
+      "cell": 99,
+      "label": "Ingresos por pensiones",
+      "amount_cop": 0,
+      "formula": "atestación de ausencia"
+    },
+    "104": {
+      "cell": 104,
+      "label": "Dividendos y participaciones",
+      "amount_cop": 0,
+      "formula": "atestación de ausencia"
+    },
+    "112": {
+      "cell": 112,
+      "label": "Ingresos ganancias ocasionales",
+      "amount_cop": 0,
+      "formula": "atestación de ausencia"
+    },
+    "130": {
+      "cell": 130,
+      "label": "Anticipo renta año anterior",
+      "amount_cop": 0,
+      "formula": "declarado; factor 0%"
+    },
+    "131": {
+      "cell": 131,
+      "label": "Saldo a favor año anterior",
+      "amount_cop": 0,
+      "formula": "declared"
+    },
+    "132": {
+      "cell": 132,
+      "label": "Retenciones año gravable",
+      "amount_cop": 5000000,
+      "formula": "sum(retenciones)"
+    },
+    "140": {
+      "cell": 140,
+      "label": "Marca tope art. 336-1",
+      "amount_cop": 0,
+      "formula": "no aplica al perfil admitido"
+    },
+    "141": {
+      "cell": 141,
+      "label": "Aporte voluntario",
+      "amount_cop": 0,
+      "formula": "cero salvo decisión"
+    },
+    "134": {
+      "cell": 134,
+      "label": "Total saldo a pagar",
+      "amount_cop": 0,
+      "formula": "max(impuesto-créditos, 0)"
+    },
+    "137": {
+      "cell": 137,
+      "label": "Total saldo a favor",
+      "amount_cop": 821991,
+      "formula": "max(créditos-impuesto, 0)"
+    }
+  }
+}

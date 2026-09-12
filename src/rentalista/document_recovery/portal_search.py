@@ -9,12 +9,6 @@ from urllib.parse import urlparse
 from rentalista.domain.enums import PortalCandidateSource, PortalCandidateStatus
 from rentalista.domain.models import PortalCandidate
 
-# Never put taxpayer PII into a search query.
-_PII_PATTERNS = [
-    re.compile(r"\b\d{6,12}\b"),  # cédula-like
-    re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+"),
-]
-
 
 class PortalSearchProvider(Protocol):
     def search(

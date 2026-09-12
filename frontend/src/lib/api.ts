@@ -14,7 +14,7 @@ export async function createCase(locale: "es" | "en"): Promise<CreateCaseRespons
     const res = await fetch(`${API_BASE}/api/v1/cases?locale=${locale}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      signal: AbortSignal.timeout(2500),
+      signal: AbortSignal.timeout(5000),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = (await res.json()) as { case_id: string; case_token: string; status: string };
@@ -44,7 +44,7 @@ export async function putProfile(
   caseId: string,
   token: string,
   body: Record<string, unknown>,
-): Promise<{ ok: boolean; admitted?: boolean }> {
+): Promise<{ ok: boolean; admitted?: boolean; mock?: boolean }> {
   try {
     const res = await fetch(`${API_BASE}/api/v1/cases/${caseId}/profile`, {
       method: "PUT",
@@ -53,13 +53,14 @@ export async function putProfile(
         "x-case-token": token,
       },
       body: JSON.stringify(body),
-      signal: AbortSignal.timeout(2500),
+      signal: AbortSignal.timeout(5000),
     });
     if (!res.ok) return { ok: false };
     const data = (await res.json()) as { admitted?: boolean };
-    return { ok: true, admitted: Boolean(data.admitted) };
+    return { ok: true, admitted: Boolean(data.admitted), mock: false };
   } catch {
-    return { ok: true, admitted: computeAdmitted(body) };
+    // Offline mock: still succeed locally, but mark mock so UI can say so.
+    return { ok: true, admitted: computeAdmitted(body), mock: true };
   }
 }
 

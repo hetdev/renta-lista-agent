@@ -45,14 +45,22 @@ def portal_login(
     return {"banner": DEMO_BANNER, "next": "otp", "session": sid[:6] + "..."}
 
 
+def _get_session(sid: str) -> dict[str, Any]:
+    sess = _sessions.get(sid)
+    if not sess:
+        raise HTTPException(status_code=401, detail="no session")
+    if datetime.now(UTC) > sess["expires"]:
+        _sessions.pop(sid, None)
+        raise HTTPException(status_code=401, detail="session expired")
+    return sess
+
+
 @router.post("/otp")
 def portal_otp(
     code: str = Form(...),
     demo_portal_session: str = Cookie(default=""),
 ) -> dict[str, Any]:
-    sess = _sessions.get(demo_portal_session)
-    if not sess:
-        raise HTTPException(status_code=401, detail="no session")
+    sess = _get_session(demo_portal_session)
     if code != _OTP:
         raise HTTPException(status_code=401, detail="bad otp — human handoff required")
     sess["otp_ok"] = True
@@ -61,8 +69,8 @@ def portal_otp(
 
 @router.get("/certificate")
 def portal_certificate(demo_portal_session: str = Cookie(default="")) -> Response:
-    sess = _sessions.get(demo_portal_session)
-    if not sess or not sess.get("otp_ok"):
+    sess = _get_session(demo_portal_session)
+    if not sess.get("otp_ok"):
         raise HTTPException(status_code=401, detail="otp required")
     return Response(
         content=CERT_BODY,

@@ -9,6 +9,7 @@ import { formatCOP } from "@/lib/api";
 import { getCaseBlob, getCaseSession, saveCaseBlob } from "@/lib/case-session";
 import { path, type Locale } from "@/lib/i18n";
 import type { Messages } from "@/lib/messages";
+import demoDraft from "@/lib/demo-draft.json";
 
 type DraftState = {
   status: "idle" | "ready";
@@ -21,6 +22,8 @@ type DraftState = {
   impuesto: number;
   anticipos: number;
   saldo: number;
+  saldo_a_pagar: number;
+  saldo_a_favor: number;
   evidence: Record<string, string>;
 };
 
@@ -35,30 +38,41 @@ const EMPTY: DraftState = {
   impuesto: 0,
   anticipos: 0,
   saldo: 0,
+  saldo_a_pagar: 0,
+  saldo_a_favor: 0,
   evidence: {},
 };
 
-// Synthetic COP figures for the demo case (Ana Rivera).
-const DEMO_CALC: DraftState = {
-  status: "ready",
-  laboral: 72_400_000,
-  capital: 3_850_000,
-  no_domiciliados: 1_200_000,
-  rentas_exentas: 4_100_000,
-  deducciones: 8_900_000,
-  renta_liquida: 62_050_000,
-  impuesto: 7_650_000,
-  anticipos: 6_900_000,
-  saldo: 750_000,
-  evidence: {
-    laboral: "Certificado laboral · empleador demo",
-    capital: "Exógena financiera · banco demo",
-    rentas_exentas: "Aportes salud / fondo empleados",
-    deducciones: "Dependientes + intereses vivienda",
-    impuesto: "Tarifa ag2025-0.1.0",
-    anticipos: "Retenciones en la fuente",
-  },
-};
+/** Engine golden for the synthetic case (frontend/src/lib/demo-draft.json). */
+function fromEngine(): DraftState {
+  const c = demoDraft.cells as Record<string, { amount_cop: number }>;
+  return {
+    status: "ready",
+    laboral: c["32"]?.amount_cop ?? 0,
+    capital: c["58"]?.amount_cop ?? 0,
+    no_domiciliados: 0,
+    rentas_exentas: c["92"]?.amount_cop ?? 0,
+    deducciones: c["139"]?.amount_cop ?? 0,
+    renta_liquida: c["93"]?.amount_cop ?? 0,
+    impuesto: c["116"]?.amount_cop ?? 0,
+    anticipos: c["132"]?.amount_cop ?? 0,
+    saldo: demoDraft.saldo_a_pagar || demoDraft.saldo_a_favor,
+    saldo_a_pagar: demoDraft.saldo_a_pagar,
+    saldo_a_favor: demoDraft.saldo_a_favor,
+    evidence: {
+      laboral: "casilla 32 · salarios confirmados",
+      capital: "casilla 58 · rendimientos nacionales",
+      rentas_exentas: "casilla 92 · tope 40%/1340 UVT + c28 + c139",
+      deducciones: "casilla 139 · adición dependientes",
+      renta_liquida: "casilla 93 · gravables - c92",
+      impuesto: "casilla 116 · tarifa art. 241 ag2025-0.1.0",
+      anticipos: "casilla 132 · retenciones",
+      saldo: "casillas 134/137 · invariantes",
+    },
+  };
+}
+
+const ENGINE_DRAFT = fromEngine();
 
 export function DraftContent({ locale, messages }: { locale: Locale; messages: Messages }) {
   return (
@@ -103,22 +117,18 @@ function DraftPanel({
     );
   }
 
-  const activeCaseId = caseId;
-
   function prepare() {
     setBusy(true);
     window.setTimeout(() => {
-      const next = { ...DEMO_CALC };
-      setDraft(next);
-      saveCaseBlob(activeCaseId, "draft", next);
+      setDraft(ENGINE_DRAFT);
+      saveCaseBlob(caseId, "draft", ENGINE_DRAFT);
       setBusy(false);
-    }, 600);
+    }, 400);
   }
 
   const incomeRows = [
     { key: "laboral", value: draft.laboral },
     { key: "capital", value: draft.capital },
-    { key: "no_domiciliados", value: draft.no_domiciliados },
   ] as const;
 
   const taxRows = [
@@ -146,7 +156,12 @@ function DraftPanel({
           </button>
           {draft.status === "ready" ? <span className="badge-ok">{messages.draft.ready}</span> : null}
         </div>
-        <p className="text-xs text-slate-500">{messages.draft.demoValues}</p>
+        <p className="text-xs text-slate-500">
+          {messages.draft.demoValues} · engine ag2025-0.1.0 ·{" "}
+          {draft.saldo_a_favor > 0
+            ? `saldo a favor ${formatCOP(draft.saldo_a_favor)}`
+            : `saldo a pagar ${formatCOP(draft.saldo_a_pagar)}`}
+        </p>
       </div>
 
       {draft.status === "ready" ? (
@@ -164,9 +179,6 @@ function DraftPanel({
                     onClick={() => setOpenCell(openCell === row.key ? null : row.key)}
                   >
                     {messages.draft.cells[row.key]}
-                    {draft.evidence[row.key] ? (
-                      <span className="ml-1 text-xs text-brand-600">·</span>
-                    ) : null}
                   </button>
                   <span className="font-mono text-slate-900">{formatCOP(row.value)}</span>
                 </li>
@@ -208,7 +220,8 @@ function DraftPanel({
                 {messages.draft.evidence}
               </p>
               <p className="text-sm text-slate-800">
-                {messages.draft.cells[openCell as keyof typeof messages.draft.cells]} — {draft.evidence[openCell]}
+                {messages.draft.cells[openCell as keyof typeof messages.draft.cells]} —{" "}
+                {draft.evidence[openCell]}
               </p>
             </div>
           ) : null}

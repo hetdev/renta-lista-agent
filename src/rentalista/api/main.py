@@ -11,13 +11,14 @@ from rentalista.api.store import (
     ConflictError,
     InMemoryStore,
     QuotaExceededError,
+    complete_job,
     create_case,
     create_job,
     get_case_for_token,
     get_job,
     save_profile,
 )
-from rentalista.domain.enums import AgentCommand
+from rentalista.domain.enums import AgentCommand, JobStatus
 from rentalista.domain.models import TaxpayerProfile
 
 store = InMemoryStore()
@@ -113,9 +114,30 @@ def post_job(
         raise HTTPException(status_code=409, detail=str(exc)) from exc
     except QuotaExceededError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
+    # Inline runner so status is not stuck at ACCEPTED (demo: no background worker yet).
+    case = store.cases[case_id]
+    if body.command is AgentCommand.PREPARE_DRAFT and case.profile is not None:
+        from rentalista.agent.schemas import run_command
+
+        try:
+            result = run_command(
+                {
+                    "command": body.command.value,
+                    "case_id": str(case_id),
+                    "job_id": str(job["job_id"]),
+                    "profile": case.profile.model_dump(),
+                    "amounts": {},
+                    "dependents": case.profile.dependents_confirmed,
+                }
+            )
+            complete_job(
+                store, job["job_id"], status=JobStatus.SUCCEEDED, stage=str(result.get("status"))
+            )
+        except Exception as exc:  # noqa: BLE001
+            complete_job(store, job["job_id"], status=JobStatus.FAILED, stage="failed", error=str(exc))
     return {
         "job_id": str(job["job_id"]),
-        "status": job["status"],
+        "status": str(job["status"]),
         "accepted": True,
     }
 

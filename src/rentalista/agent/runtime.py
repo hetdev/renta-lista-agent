@@ -30,10 +30,12 @@ if app is not None:
 
     @app.entrypoint
     def entrypoint(payload: dict[str, Any]) -> dict[str, Any]:  # type: ignore[misc]
-        """Ack immediately with job_id; heavy work is done in background threads."""
+        """Validate payload and run the deterministic command.
+
+        Long Browser/recovery work must use add_async_task in a later iteration;
+        PREPARE_DRAFT is fast enough to run inline.
+        """
         validated = validate_payload(payload)
-        # Background async task pattern is wired in Task 7 full integration.
-        # For now execute deterministic command synchronously for smoke tests.
         result = run_command(validated)
         return {
             "job_id": validated["job_id"],

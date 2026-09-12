@@ -63,5 +63,5 @@ def agent_payload_schema() -> dict[str, Any]:
             "cell": {"type": ["integer", "null"]},
             "locale": {"type": "string", "enum": ["es", "en"]},
         },
-        "additionalProperties": True,
+        "additionalProperties": False,
     }

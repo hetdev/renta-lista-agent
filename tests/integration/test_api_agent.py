@@ -54,15 +54,19 @@ def test_job_conflict_and_idempotency() -> None:
     job_body = {"command": AgentCommand.PREPARE_DRAFT.value, "idempotency_key": "k1"}
     j1 = client.post(f"/api/v1/cases/{case_id}/jobs", json=job_body, headers=h)
     assert j1.status_code == 202
+    assert j1.json()["status"] == "SUCCEEDED"
     j2 = client.post(f"/api/v1/cases/{case_id}/jobs", json=job_body, headers=h)
     assert j2.status_code == 202
     assert j2.json()["job_id"] == j1.json()["job_id"]
+    # lock released after success — next command is accepted
     j3 = client.post(
         f"/api/v1/cases/{case_id}/jobs",
         json={"command": AgentCommand.GENERATE_PACKET.value, "idempotency_key": "k2"},
         headers=h,
     )
-    assert j3.status_code == 409
+    assert j3.status_code == 202
+    job = client.get(f"/api/v1/cases/{case_id}/jobs/{j1.json()['job_id']}", headers=h)
+    assert job.json()["status"] == "SUCCEEDED"
 
 
 def test_entrypoint_rejects_prompt_and_runs_draft() -> None:
