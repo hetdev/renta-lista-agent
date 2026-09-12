@@ -7,6 +7,7 @@ from pypdf import PdfReader
 
 from rentalista.domain.money import COP, cop_from_str
 
+
 def _parse_money(raw: str) -> COP:
     s = raw.strip().replace("$", "").replace(" ", "")
     if not s:
