@@ -7,7 +7,9 @@ from rentalista.domain.money import COP, require_non_negative, safe_sub, uvt_202
 from rentalista.tax.deductions import (
     cell_92_rentas_exentas,
     dependent_adition,
+    dependent_labor_deduction,
     factura_electronica_deduction,
+    labor_no_constitutive_25,
     patrimonio_liquido,
 )
 from rentalista.tax.obligation import evaluate_obligation
@@ -71,14 +73,22 @@ def calculate_form210(facts: ConfirmedTaxFacts, *, rule_version: str) -> Draft21
     cells[31] = _cell(31, "Patrimonio líquido", pl, "max(c29-c30, 0)", c29=pb, c30=deudas)
 
     # --- Cédula general / trabajo ---
-    # Simplified MVP profile: labor income + financial (capital) income.
+    # Labor income: 25% no constitutivo (máx 240 UVT) + aportes + 72 UVT/dependiente.
     salarios = amounts.get("salarios", COP(0))
     otros_trabajo = amounts.get("otros_trabajo", COP(0))
     ingresos_trabajo = COP(salarios + otros_trabajo)
     aportes_salud_pension = amounts.get("aportes_salud_pension", COP(0))
-    no_constitutivos = amounts.get("no_constitutivos_trabajo", COP(0))
+    # Extra manual no-constitutivos (beyond the statutory 25%).
+    extra_no_const = amounts.get("no_constitutivos_trabajo", COP(0))
+    no_const_25 = labor_no_constitutive_25(ingresos_trabajo)
+    no_constitutivos = COP(no_const_25 + extra_no_const)
+    ded_deps_trabajo = dependent_labor_deduction(facts.dependents)
     gravables_trabajo = safe_sub(
-        safe_sub(ingresos_trabajo, no_constitutivos), aportes_salud_pension
+        safe_sub(
+            safe_sub(ingresos_trabajo, no_constitutivos),
+            aportes_salud_pension,
+        ),
+        ded_deps_trabajo,
     )
 
     rendimientos = amounts.get("rendimientos_financieros", COP(0))
@@ -88,6 +98,19 @@ def calculate_form210(facts: ConfirmedTaxFacts, *, rule_version: str) -> Draft21
     gravables_cedula_general = COP(gravables_trabajo + gravables_capital)
 
     cells[32] = _cell(32, "Ingresos brutos rentas de trabajo", ingresos_trabajo, "salarios+otros")
+    cells[33] = _cell(
+        33,
+        "Ingresos no constitutivos trabajo (25%)",
+        no_const_25,
+        "min(25% c32, 240 UVT)",
+        extra_manual=extra_no_const,
+    )
+    cells[34] = _cell(
+        34,
+        "Deducción dependientes trabajo (72 UVT c/u)",
+        ded_deps_trabajo,
+        "72 UVT × min(deps, 4)",
+    )
     cells[36] = _cell(
         36,
         "Otras rentas exentas trabajo",

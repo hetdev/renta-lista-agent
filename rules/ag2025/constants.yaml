@@ -7,6 +7,10 @@ exempt_income_uvt_cap: 1340
 dependent_adition_base_uvt: 524
 dependent_adition_pct: 10
 dependent_adition_max: 4
+labor_no_const_pct: 25
+labor_no_const_max_uvt: 240
+dependent_labor_uvt: 72
+dependent_labor_max: 4
 patrimonio_bruto_uvt: 4500
 patrimonio_bruto_op: ">"
 ingresos_brutos_uvt: 1400

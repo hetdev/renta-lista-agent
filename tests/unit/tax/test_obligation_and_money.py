@@ -8,7 +8,9 @@ from rentalista.domain.money import COP, cop_from_float_like, cop_from_str, uvt_
 from rentalista.tax.deductions import (
     cell_92_rentas_exentas,
     dependent_adition,
+    dependent_labor_deduction,
     factura_electronica_deduction,
+    labor_no_constitutive_25,
 )
 from rentalista.tax.obligation import evaluate_obligation
 from rentalista.tax.rates import assert_saldo_invariants, income_tax_cop, net_payable
@@ -114,6 +116,20 @@ def test_dependents_bounds() -> None:
     assert dependent_adition(4) > dependent_adition(1)
     with pytest.raises(ValueError):
         dependent_adition(5)
+
+
+def test_labor_25_pct_capped_at_240_uvt() -> None:
+    assert labor_no_constitutive_25(COP(200_000)) == COP(50_000)
+    assert labor_no_constitutive_25(COP(100_000_000)) == COP(240 * 49_799)
+    assert labor_no_constitutive_25(COP(0)) == COP(0)
+
+
+def test_dependent_labor_72_uvt_max_4() -> None:
+    per = 72 * 49_799
+    assert dependent_labor_deduction(0) == COP(0)
+    assert dependent_labor_deduction(1) == COP(per)
+    assert dependent_labor_deduction(4) == COP(per * 4)
+    assert dependent_labor_deduction(10) == COP(per * 4)
 
 
 def test_no_float_in_money_boundary() -> None:

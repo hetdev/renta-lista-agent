@@ -76,6 +76,10 @@ def test_form210_first_filing_draft() -> None:
     assert draft.blockers == []
     assert 29 in draft.cells and 31 in draft.cells
     assert 28 in draft.cells
+    # 25% labor: min(20M, 240 UVT=11_951_760) → cap
+    assert draft.cells[33].amount_cop == COP(11_951_760)
+    # 72 UVT × 1 dependent
+    assert draft.cells[34].amount_cop == COP(72 * 49_799)
     assert 140 in draft.cells and draft.cells[140].amount_cop == COP(0)
     assert not (draft.saldo_a_pagar > 0 and draft.saldo_a_favor > 0)
     # recomputable

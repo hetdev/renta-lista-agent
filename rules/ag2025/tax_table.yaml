@@ -1,24 +1,26 @@
-# Art. 241 progressive table — AG 2025 (UVT).
-# Bracket starts are inclusive lower bounds.
+# Art. 241 ET (art. 34 Ley 2010/2019), progressive table in force for AG 2025.
+# Statutory ranges read "> from_uvt" (exclusive lower bound). fixed_tax_uvt is the
+# integer printed in the law. Must match src/rentalista/tax/rates.py (tested in
+# tests/unit/tax/test_rates.py).
 brackets:
   - from_uvt: 0
     fixed_tax_uvt: 0
     marginal_rate: "0"
   - from_uvt: 1090
-    fixed_tax_uvt: 19
+    fixed_tax_uvt: 0
     marginal_rate: "0.19"
   - from_uvt: 1700
-    fixed_tax_uvt: 135
+    fixed_tax_uvt: 116
     marginal_rate: "0.28"
   - from_uvt: 4100
-    fixed_tax_uvt: 803
+    fixed_tax_uvt: 788
     marginal_rate: "0.33"
   - from_uvt: 8670
-    fixed_tax_uvt: 2307
+    fixed_tax_uvt: 2296
     marginal_rate: "0.35"
   - from_uvt: 18970
-    fixed_tax_uvt: 5912
+    fixed_tax_uvt: 5901
     marginal_rate: "0.37"
   - from_uvt: 31000
-    fixed_tax_uvt: 10391
+    fixed_tax_uvt: 10352
     marginal_rate: "0.39"

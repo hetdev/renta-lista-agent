@@ -1,55 +1,36 @@
 #!/usr/bin/env python3
-"""Regenerate frontend/src/lib/demo-draft.json from the deterministic engine."""
+"""Regenerate the demo JSONs from the deterministic engine on the repo fixtures.
+
+Writes demo/expected/real_demo_run.json (full pipeline payload) and
+frontend/src/lib/demo-draft.json (the Draft210 the UI shows). Same scenario as
+scripts/run_demo_docs.py, with a fixed case_id so the diff stays stable.
+"""
+
 from __future__ import annotations
 
 import json
 from pathlib import Path
-from uuid import uuid4
 
-from rentalista.agent.schemas import run_command
+from rentalista.ingestion.demo_pipeline import DEMO_CASE_ID, run_pipeline
 
 ROOT = Path(__file__).resolve().parents[1]
+XLSX = ROOT / "demo" / "fixtures" / "reporteExogena2025_demo.xlsx"
+PDF = ROOT / "demo" / "fixtures" / "nequi_retencion_demo.pdf"
+EXPECTED = ROOT / "demo" / "expected" / "real_demo_run.json"
 OUT = ROOT / "frontend" / "src" / "lib" / "demo-draft.json"
 
 
 def main() -> None:
-    result = run_command(
-        {
-            "command": "PREPARE_DRAFT",
-            "case_id": str(uuid4()),
-            "profile": {
-                "resident_2025": True,
-                "not_required_accounting": True,
-                "initial_filing": True,
-                "timely_filing": True,
-                "iva_responsible_dec_31": False,
-                "labor_income_only": True,
-                "national_financial_income": True,
-                "assets_only_colombia": True,
-                "no_foreign_currency": True,
-                "no_excluded_facts": True,
-                "absence_attestations": {
-                    "pensiones": True,
-                    "dividendos": True,
-                    "ganancias_ocasionales": True,
-                },
-            },
-            "amounts": {
-                "patrimonio_bruto": 250_000_000,
-                "deudas": 50_000_000,
-                "ingresos_brutos": 82_000_000,
-                "salarios": 80_000_000,
-                "aportes_salud_pension": 8_000_000,
-                "rendimientos_financieros": 2_000_000,
-                "retenciones_fuente": 5_000_000,
-                "compras_factura_electronica": 10_000_000,
-            },
-            "dependents": 1,
-            "previous_filing": "FIRST",
-        }
+    payload, _ = run_pipeline(XLSX, PDF, case_id=DEMO_CASE_ID)
+    EXPECTED.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    OUT.write_text(
+        json.dumps(payload["draft"], indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
-    OUT.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"wrote {OUT} saldo_a_pagar={result['saldo_a_pagar']}")
+    draft = payload["draft"]
+    print(
+        f"wrote {EXPECTED.relative_to(ROOT)} and {OUT.relative_to(ROOT)}: "
+        f"saldo_a_pagar={draft['saldo_a_pagar']} saldo_a_favor={draft['saldo_a_favor']}"
+    )
 
 
 if __name__ == "__main__":

@@ -32,11 +32,11 @@
   },
   "obligation": true,
   "draft": {
-    "case_id": "5999c0dd-7ba6-404e-b136-823090bed027",
+    "case_id": "00000000-0000-4000-8000-000000000210",
     "status": "DRAFT_READY",
     "must_file": true,
-    "saldo_a_pagar": 189288,
-    "saldo_a_favor": 0,
+    "saldo_a_pagar": 0,
+    "saldo_a_favor": 3708977,
     "blockers": [],
     "cells": {
       "29": {
@@ -62,6 +62,18 @@
         "label": "Ingresos brutos rentas de trabajo",
         "amount_cop": 89250000,
         "formula": "salarios+otros"
+      },
+      "33": {
+        "cell": 33,
+        "label": "Ingresos no constitutivos trabajo (25%)",
+        "amount_cop": 11951760,
+        "formula": "min(25% c32, 240 UVT)"
+      },
+      "34": {
+        "cell": 34,
+        "label": "Deducción dependientes trabajo (72 UVT c/u)",
+        "amount_cop": 3585528,
+        "formula": "72 UVT × min(deps, 4)"
       },
       "36": {
         "cell": 36,
@@ -108,19 +120,19 @@
       "93": {
         "cell": 93,
         "label": "Renta líquida cédula general",
-        "amount_cop": 74692002,
+        "amount_cop": 59154714,
         "formula": "gravables - c92"
       },
       "111": {
         "cell": 111,
         "label": "Renta líquida gravable",
-        "amount_cop": 74692002,
+        "amount_cop": 59154714,
         "formula": "max(c93, 0)"
       },
       "116": {
         "cell": 116,
         "label": "Impuesto neto de renta",
-        "amount_cop": 4824288,
+        "amount_cop": 926023,
         "formula": "tarifa art. 241"
       },
       "99": {
@@ -174,13 +186,13 @@
       "134": {
         "cell": 134,
         "label": "Total saldo a pagar",
-        "amount_cop": 189288,
+        "amount_cop": 0,
         "formula": "max(impuesto-créditos, 0)"
       },
       "137": {
         "cell": 137,
         "label": "Total saldo a favor",
-        "amount_cop": 0,
+        "amount_cop": 3708977,
         "formula": "max(créditos-impuesto, 0)"
       }
     }

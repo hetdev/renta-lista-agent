@@ -68,5 +68,10 @@ def test_golden_form210_deterministic_and_stable() -> None:
     out = Path(__file__).resolve().parents[2] / "demo" / "expected" / "form210_snapshot.json"
     out.write_text(json.dumps(snapshot, indent=2), encoding="utf-8")
     assert snapshot["cells"]["28"] == 100_000  # 1% of 10M
+    assert snapshot["cells"]["33"] == 11_951_760  # min(25% c32, 240 UVT)
+    assert snapshot["cells"]["34"] == 72 * 49_799  # 72 UVT dependiente trabajo
     assert snapshot["cells"]["140"] == 0
     assert snapshot["cells"]["134"] * snapshot["cells"]["137"] == 0
+    assert snapshot["cells"]["116"] == 279_743
+    assert snapshot["saldo_a_pagar"] == 0
+    assert snapshot["saldo_a_favor"] == 4_720_257  # retenciones - impuesto
