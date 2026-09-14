@@ -4,7 +4,7 @@
 RentaLista: an evidence-first Colombian income tax agent
 
 ## Elevator pitch
-RentaLista helps a Colombian tax-resident person reconcile third-party exogenous tax data and prepare a **traceable Form 210 draft** with a deterministic engine. Strands Agents orchestrates tools; Amazon Bedrock AgentCore Runtime runs the agent. **It never files with DIAN.**
+RentaLista helps a Colombian tax-resident person reconcile third-party exogenous tax data and prepare a **traceable Form 210 draft**. The Form 210 math is a deterministic engine, never an LLM; the agent entrypoint runs on Amazon Bedrock AgentCore Runtime. **It never files with DIAN.**
 
 > Draft for review only. Not filed with DIAN.
 
@@ -15,17 +15,17 @@ RentaLista helps a Colombian tax-resident person reconcile third-party exogenous
 
 ## What judges can try
 - Live demo: https://deuhmh4dvlr6i.cloudfront.net/
-- ES: `/es/` · EN: `/en/`
-- Click **Probar caso sintético** → profile → **Prepare draft**
-- Cell ledger shows 25% labor (max 240 UVT), 72 UVT/dependent, art. 241 tax, amount payable/credit rounded to thousands
-- API: `POST /api/v1/cases` · `PUT .../profile` · `POST .../jobs` with `PREPARE_DRAFT`
+- EN: `/en/` (default) · ES: `/es/`
+- Start the synthetic case → profile → **Prepare draft**
+- Cell ledger shows the 25% labor rule, 72 UVT per dependent, art. 241 tax, and the credit balance rounded to thousands (3.709.000 COP on the synthetic case)
+- API: `POST /api/v1/cases` · `PUT .../profile` · `POST .../jobs` with `PREPARE_DRAFT` (returns SUCCEEDED; case becomes DRAFT_READY)
 
 ## Stack
-- Strands Agents + Amazon Bedrock (`amazon.nova-micro-v1:0`)
-- AgentCore Runtime, Gateway Web Search, Browser (Live View)
+- Deterministic Form 210 engine (no LLM arithmetic), bilingual es/en cell labels
 - FastAPI on Lambda behind CloudFront `/api/v1`
 - Next.js 15 static export (es/en)
-- Deterministic Form 210 engine (no LLM arithmetic)
+- Amazon Bedrock AgentCore Runtime hosting the agent entrypoint
+- Provisioned, not yet on the public demo path: Strands Agents with Amazon Bedrock (`amazon.nova-micro-v1:0`), AgentCore Gateway Web Search, AgentCore Browser (Live View)
 
 ## Open source
 - Repo: https://github.com/hetdev/renta-lista-agent
@@ -36,10 +36,10 @@ Get one at https://profile.aws.amazon.com/ (sign up with email).
 Paste the **email** you used: **hetzel30@gmail.com**
 
 ## Video
-_(paste YouTube/Vimeo URL, ≤ 5:00)_
+_(paste YouTube/Vimeo URL, ≤ 5:00 — recorded locally as `docs/rentalista-demo-live.mp4`, 3:10, live app with English narration and captions)_
 
 ## Notes
 - Synthetic data only on the public demo
 - Fictional reporter for missing-certificate demo: Banco Sintético Andino
-- OTP for synthetic portal: 123456
+- OTP for synthetic portal: 123456 (portal available with the API running locally)
 - Demo available free until judging ends (**8 Oct 2026 19:00 COT** / 5:00 p. m. PT)
