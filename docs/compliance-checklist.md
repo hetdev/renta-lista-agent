@@ -24,9 +24,15 @@
 | Builder ID email | _(paste)_ |
 | Architecture | `docs/architecture.md` |
 
+## AWS Builder ID — cómo conseguirlo (2 minutos)
+1. Abre https://profile.aws.amazon.com/ (o entra a builder.aws.com y haz sign-up)
+2. Crea cuenta con **tu email**, nombre y contraseña (también vale Google/Apple)
+3. Listo: tu **Builder ID es ese email**
+4. En el formulario de Devpost, pega ese **email** (no un nombre, no un ARN)
+
 ## Optional
 - [ ] builder.aws blog post (title includes **Agents for Humans**) — up to 0.6 pts
 
 ## After submit
 - [ ] Capture confirmation (`submitted`, not draft)
-- [ ] Keep infra until 8 Oct 2026
+- [ ] Keep infra until **8 Oct 2026 19:00 COT**

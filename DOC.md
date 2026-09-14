@@ -1,7 +1,7 @@
 # RentaLista Agent — Estado del proyecto
 
 **Actualizado:** 14 de septiembre de 2026 · HEAD `ecd3a9b`  
-**Hackathon:** [Agents for Humans](https://agentsforhumans.devpost.com) · **deadline hoy 14 sep 2026 19:00 COT** (19:00 COT)  
+**Hackathon:** [Agents for Humans](https://agentsforhumans.devpost.com) · **deadline hoy 14 sep 2026 19:00 COT** (oficial: 5:00 p. m. Pacific)  
 **Repo:** https://github.com/hetdev/renta-lista-agent
 
 ---
@@ -144,7 +144,7 @@ UI draft = motor · jobs SUCCEEDED · 25% laboral + 72 UVT/dep · art. 241 · ar
 ## Checklist Devpost
 
 - [ ] Video público ≤ 5:00 (demo + pitch 3 frases)
-- [ ] Devpost `submitted` antes de **19:00 COT** (19:00 COT)
+- [ ] Devpost `submitted` antes de **19:00 COT** (oficial: 5:00 p. m. Pacific)
 - [ ] Builder ID = email
 - [ ] Repo público MIT (hecho)
 - [ ] README EN + diagrama (hecho)

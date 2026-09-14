@@ -32,7 +32,8 @@ RentaLista helps a Colombian tax-resident person reconcile third-party exogenous
 - License: MIT
 
 ## Builder ID
-_(paste the email used for your AWS Builder ID)_
+Get one at https://profile.aws.amazon.com/ (sign up with email).
+Paste the **email** you used: _(your@email.com)_
 
 ## Video
 _(paste YouTube/Vimeo URL, ≤ 5:00)_
@@ -41,4 +42,4 @@ _(paste YouTube/Vimeo URL, ≤ 5:00)_
 - Synthetic data only on the public demo
 - Fictional reporter for missing-certificate demo: Banco Sintético Andino
 - OTP for synthetic portal: 123456
-- Demo available free until judging ends (8 Oct 2026)
+- Demo available free until judging ends (**8 Oct 2026 19:00 COT** / 5:00 p. m. PT)
