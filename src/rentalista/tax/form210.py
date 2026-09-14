@@ -29,7 +29,7 @@ def _cell(
     amount: COP,
     formula: str,
     *,
-    locale: Locale = "es",
+    locale: Locale = "en",
     label: str | None = None,
     **operands: object,
 ) -> CellResult:
