@@ -18,7 +18,7 @@ def write_nequi_demo_pdf(path: Path) -> None:
         "NEQUI S.A. Compañía de Financiamiento",
         "Depósito de bajo monto: *****7194",
         "Nombre del titular: juan demo",
-        "Número de documento: *****2850",
+        "Número de documento: ***3444",
         "NIT: 901633276",
         "Municipio: Medellín  Departamento: Antioquia",
         "Retención en la fuente GMF",

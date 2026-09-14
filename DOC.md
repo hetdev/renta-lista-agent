@@ -31,7 +31,7 @@ Demo pública bilingüe (en por defecto, es) que:
 | 4 | Quitar "max 240 UVT" del pitch | Hecho en `docs/devpost-submission-en.md` | El 25 % laboral es renta exenta con tope **790 UVT** (art. 206 num. 10, Ley 2277/2022); el motor usa 240 UVT y lo trata como no constitutivo (H1). No mencionar el tope en el video |
 | 5 | Live View en `/case/browser/` | No demoable | La página desplegada sigue con la guarda `!API_BASE` (env vacío): el chunk no contiene la llamada a `live-view`. Solo si se quiere mostrar: quitar la guarda, rebuild, subir |
 | 6 | `make verify` | Rojo | `ruff format` 3 archivos (`agent/__main__.py`, `ingestion/pdf_facts.py`, `tax/form210.py`), mypy 12 errores. Tests 58 en verde, `ruff check` OK, `tsc` OK |
-| 7 | Confirmar ID sintético | Pendiente | `demo/fixtures/reporteExogena2025_demo.xlsx` lleva `1019072850` en las 14 filas (la cabecera dice 123444); el PDF Nequi termina en `2850` |
+| 7 | ID sintético en fixtures | **HECHO 14 sep** | Las 14 filas del XLSX y el documento enmascarado del PDF Nequi usan ahora el mismo ID ficticio de la cabecera (`123444` / `***3444`); no queda ningún identificador con formato de cédula real. Números del demo sin cambios |
 
 ---
 
@@ -180,7 +180,7 @@ OTP portal sintético: **`123456`**
 - [x] Repo público MIT
 - [x] README EN + diagrama (`docs/architecture.md`)
 - [x] URL live sin login hasta 8 oct (200 el 14 sep)
-- [x] Solo datos sintéticos (pendiente confirmar el ID `1019072850`)
+- [x] Solo datos sintéticos (ID de los fixtures reemplazado por `123444` el 14 sep)
 - [x] Video grabado ≤ 5:00 (`docs/rentalista-demo-live.mp4`, 3:10, demo real con narración)
 - [x] Video **subido**: https://www.youtube.com/watch?v=qnakivEdego
 - [x] 3 frases del pitch en la tarjeta inicial y en la narración (0:00–0:30)

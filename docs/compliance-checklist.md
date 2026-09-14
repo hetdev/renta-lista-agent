@@ -10,7 +10,7 @@
 - [ ] **Devpost submitted** before 2026-09-14 19:00 COT (internal cut 15:00 COT)
 - [x] **AWS Builder ID email** → **hetzel30@gmail.com**
 - [x] Track: Everyday Agents only
-- [x] Synthetic data only — confirm the ID `1019072850` in `demo/fixtures/reporteExogena2025_demo.xlsx` (and `*2850` in the Nequi PDF) is synthetic; replace it if in doubt
+- [x] Synthetic data only — the taxpayer ID in `demo/fixtures/reporteExogena2025_demo.xlsx` and the masked document number in the Nequi PDF were replaced by the fictional `123444` / `***3444` on 14 Sep
 
 ## Do not claim in the video or on the form (not true on the public demo today)
 - Web Search / Live View as working: provisioned, not wired; the Live View page is inert in the deployed build. Strands Agents + Bedrock Nova Micro DO orchestrate the engine tool (`scripts/run_strands_agent.py`, transcript in `demo/expected/strands_run.json`, AgentCore entrypoint behind `RENTALISTA_STRANDS=1`), just not on the public HTTP path
