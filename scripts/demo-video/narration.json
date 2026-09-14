@@ -1,22 +1,82 @@
 [
-  {"id": "pitch", "text": "RentaLista is an evidence-first Colombian income tax agent. The problem: reconciling Colombia's third-party tax report and assembling a Form 210 draft is slow and error-prone. Who it's for: a tax-resident person filing their own return, not an accounting firm. Why it matters: missing certificates, silent zeros and unverified amounts create real filing risk. RentaLista keeps the evidence and the human in control, and it never files with DIAN."},
-  {"id": "intro", "text": "This is the public demo, in English and Spanish, with synthetic data only."},
-  {"id": "flow", "text": "The flow has four steps: profile, documents, coverage, and the Form 210 draft."},
-  {"id": "create", "text": "First we create a synthetic case. The public API issues a case id and a private token."},
-  {"id": "created", "text": "The case is created by the live API, as the api badge shows."},
-  {"id": "profile", "text": "The profile answers ten admission questions, plus dependents and filing history. They decide whether this simple regime applies."},
-  {"id": "saved", "text": "The profile is saved through the API and admitted."},
-  {"id": "docs", "text": "Documents is the certificate inventory. Each item can be uploaded, or recovered from the issuer's portal."},
-  {"id": "uploaded", "text": "We mark two certificates as uploaded."},
-  {"id": "recover", "text": "Portal recovery stops and waits for human approval before the agent browses anywhere. The assisted browser handoff is planned and is not part of this build."},
-  {"id": "coverage", "text": "Coverage shows which income concepts are verified and which are still missing, so nothing becomes a silent zero."},
-  {"id": "draft", "text": "Now the Form 210 draft. Every amount is computed by a deterministic engine, never by the language model."},
-  {"id": "ready", "text": "Income, taxable base, tax and settlement come straight from the engine."},
-  {"id": "explain", "text": "Each line can be opened to see its cell and formula."},
-  {"id": "tax", "text": "Income tax follows the article 241 progressive table, rule version A G 2025."},
-  {"id": "ledger", "text": "The cell ledger lists the key Form 210 cells. On this synthetic case the result is a credit balance of 3,709,000 pesos, rounded to thousands as the law requires."},
-  {"id": "disclaimer", "text": "The disclaimer is always visible: draft for review only, not filed with DIAN."},
-  {"id": "spanish", "text": "The same engine serves the Spanish interface."},
-  {"id": "arch", "text": "The architecture: Next.js on CloudFront, a FastAPI Lambda, the deterministic engine, and the agent entrypoint on Amazon Bedrock AgentCore Runtime. Solid arrows are implemented. Dashed ones, like Gateway web search and the browser handoff, are planned."},
-  {"id": "close", "text": "Try it at the public URL and read the code on GitHub. Evidence-first. Human-approved. Not filed with DIAN."}
+  {
+    "id": "pitch",
+    "text": "RentaLista is an evidence-first Colombian income tax agent. The problem: reconciling Colombia's third-party tax report and assembling a Form 210 draft is slow and error-prone. Who it's for: a tax-resident person filing their own return, not an accounting firm. Why it matters: missing certificates, silent zeros and unverified amounts create real filing risk. RentaLista keeps the evidence and the human in control, and it never files with DIAN."
+  },
+  {
+    "id": "intro",
+    "text": "This is the public demo, in English and Spanish, with synthetic data only."
+  },
+  {
+    "id": "flow",
+    "text": "The flow has four steps: profile, documents, coverage, and the Form 210 draft."
+  },
+  {
+    "id": "create",
+    "text": "First we create a synthetic case. The public API issues a case id and a private token."
+  },
+  {
+    "id": "created",
+    "text": "The case is created by the live API, as the api badge shows."
+  },
+  {
+    "id": "profile",
+    "text": "The profile answers ten admission questions, plus dependents and filing history. They decide whether this simple regime applies."
+  },
+  {
+    "id": "saved",
+    "text": "The profile is saved through the API and admitted."
+  },
+  {
+    "id": "docs",
+    "text": "Documents is the certificate inventory. Each item can be uploaded, or recovered from the issuer's portal."
+  },
+  {
+    "id": "uploaded",
+    "text": "We mark two certificates as uploaded."
+  },
+  {
+    "id": "recover",
+    "text": "Portal recovery stops and waits for human approval before the agent browses anywhere. The assisted browser handoff is planned and is not part of this build."
+  },
+  {
+    "id": "coverage",
+    "text": "Coverage shows which income concepts are verified and which are still missing, so nothing becomes a silent zero."
+  },
+  {
+    "id": "draft",
+    "text": "Now the Form 210 draft. Every amount is computed by a deterministic engine, never by the language model."
+  },
+  {
+    "id": "ready",
+    "text": "Income, taxable base, tax and settlement come straight from the engine."
+  },
+  {
+    "id": "explain",
+    "text": "Each line can be opened to see its cell and formula."
+  },
+  {
+    "id": "tax",
+    "text": "Income tax follows the article 241 progressive table, rule version A G 2025."
+  },
+  {
+    "id": "ledger",
+    "text": "The cell ledger lists the key Form 210 cells. On this synthetic case the result is a credit balance of 3,709,000 pesos, rounded to thousands as the law requires."
+  },
+  {
+    "id": "disclaimer",
+    "text": "The disclaimer is always visible: draft for review only, not filed with DIAN."
+  },
+  {
+    "id": "spanish",
+    "text": "The same engine serves the Spanish interface."
+  },
+  {
+    "id": "arch",
+    "text": "The architecture: Next.js on CloudFront, a FastAPI Lambda, and the deterministic engine. Strands Agents with Amazon Bedrock Nova Micro orchestrates the prepare draft tool: the model decides to call it, the engine computes every cell, and the model only summarises. The agent entrypoint runs on Amazon Bedrock AgentCore Runtime. Gateway web search and the browser handoff are provisioned and planned."
+  },
+  {
+    "id": "close",
+    "text": "Try it at the public URL and read the code on GitHub. Built with Strands Agents on Amazon Bedrock AgentCore. Evidence-first. Human-approved. Not filed with DIAN."
+  }
 ]

@@ -4,7 +4,7 @@
 RentaLista: an evidence-first Colombian income tax agent
 
 ## Elevator pitch
-RentaLista helps a Colombian tax-resident person reconcile third-party exogenous tax data and prepare a **traceable Form 210 draft**. The Form 210 math is a deterministic engine, never an LLM; the agent entrypoint runs on Amazon Bedrock AgentCore Runtime. **It never files with DIAN.**
+RentaLista helps a Colombian tax-resident person reconcile third-party exogenous tax data and prepare a **traceable Form 210 draft**. Strands Agents on Amazon Bedrock orchestrates the tools; the Form 210 math is a deterministic engine, never an LLM; the agent entrypoint runs on Amazon Bedrock AgentCore Runtime. **It never files with DIAN.**
 
 > Draft for review only. Not filed with DIAN.
 
@@ -18,14 +18,16 @@ RentaLista helps a Colombian tax-resident person reconcile third-party exogenous
 - EN: `/en/` (default) · ES: `/es/`
 - Start the synthetic case → profile → **Prepare draft**
 - Cell ledger shows the 25% labor rule, 72 UVT per dependent, art. 241 tax, and the credit balance rounded to thousands (3.709.000 COP on the synthetic case)
-- API: `POST /api/v1/cases` · `PUT .../profile` · `POST .../jobs` with `PREPARE_DRAFT` (returns SUCCEEDED; case becomes DRAFT_READY)
+- API: `POST /api/v1/cases` · `PUT .../profile` · `POST .../jobs` with `PREPARE_DRAFT` (returns SUCCEEDED; case becomes DRAFT_READY) · `GET .../draft` · `GET .../coverage`
+- Strands run (needs Bedrock access): `AWS_PROFILE=<profile> uv run python scripts/run_strands_agent.py`; recorded transcript in `demo/expected/strands_run.json` (one `prepare_draft` tool call, credit balance 3,709,000 COP from the engine)
 
 ## Stack
 - Deterministic Form 210 engine (no LLM arithmetic), bilingual es/en cell labels
 - FastAPI on Lambda behind CloudFront `/api/v1`
 - Next.js 15 static export (es/en)
-- Amazon Bedrock AgentCore Runtime hosting the agent entrypoint
-- Provisioned, not yet on the public demo path: Strands Agents with Amazon Bedrock (`amazon.nova-micro-v1:0`), AgentCore Gateway Web Search, AgentCore Browser (Live View)
+- Strands Agents with Amazon Bedrock (`amazon.nova-micro-v1:0`): the agent orchestrates the `prepare_draft` tool; the deterministic engine computes every cell, the model only summarises
+- Amazon Bedrock AgentCore Runtime hosting the agent entrypoint (Strands orchestration behind `RENTALISTA_STRANDS=1`, engine fallback)
+- Provisioned, not yet on the public demo path: AgentCore Gateway Web Search, AgentCore Browser (Live View)
 
 ## Open source
 - Repo: https://github.com/hetdev/renta-lista-agent
@@ -92,11 +94,12 @@ make install && make test                       # 52 tests
 uv run python scripts/run_demo_docs.py --xlsx demo/fixtures/reporteExogena2025_demo.xlsx --pdf demo/fixtures/nequi_retencion_demo.pdf
 uv run uvicorn rentalista.api.main:app --reload # OpenAPI at http://localhost:8000/docs; GET /api/v1/cases/{id}/draft and /coverage
                                                 # synthetic portal: POST /demo-portal/login, POST /demo-portal/otp (code 123456), GET /demo-portal/certificate
+AWS_PROFILE=<your-profile> uv run python scripts/run_strands_agent.py   # Strands agent on Bedrock Nova Micro calls the prepare_draft tool (needs bedrock:InvokeModel)
 
 NOTES
 - All data is synthetic; nothing is filed, signed or paid. The agent never logs in to DIAN.
 - The API store is in-memory: a case can disappear if the Lambda is recycled; just create a new one.
-- Gateway Web Search and Browser Live View are provisioned but not on the public demo path yet.
+- Strands + Bedrock orchestration runs through the script and the AgentCore entrypoint; Gateway Web Search and Browser Live View are provisioned but not on the public demo path yet.
 ```
 
 ## Optional bonus blog post

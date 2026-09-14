@@ -13,7 +13,7 @@
 - [x] Synthetic data only — confirm the ID `1019072850` in `demo/fixtures/reporteExogena2025_demo.xlsx` (and `*2850` in the Nequi PDF) is synthetic; replace it if in doubt
 
 ## Do not claim in the video or on the form (not true on the public demo today)
-- Strands / Bedrock model / Web Search / Live View as working: resources are READY but no public code path invokes them; the Live View page is inert in the deployed build
+- Web Search / Live View as working: provisioned, not wired; the Live View page is inert in the deployed build. Strands Agents + Bedrock Nova Micro DO orchestrate the engine tool (`scripts/run_strands_agent.py`, transcript in `demo/expected/strands_run.json`, AgentCore entrypoint behind `RENTALISTA_STRANDS=1`), just not on the public HTTP path
 - "25% labor max 240 UVT": the statute (art. 206 num. 10, Ley 2277/2022) makes it exempt income capped at 790 UVT inside the 40% limit (DOC.md H1)
 - (resolved 14 Sep 16:07 COT) Coverage rows and `GET /draft` now come from the API through CloudFront; the coverage page shows the "Exogenous rows (API)" table for API-created cases
 

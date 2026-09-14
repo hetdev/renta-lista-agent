@@ -15,7 +15,7 @@ Demo pública bilingüe (en por defecto, es) que:
 3. Calcula borrador Form 210 con **motor determinista** (no LLM), etiquetas es/en, redondeo a miles
 4. Sirve UI estática + API de caso / perfil / borrador detrás de CloudFront
 
-El **AgentCore Runtime** ejecuta el entrypoint determinista. **Strands, el modelo Bedrock, el Gateway Web Search y el Browser están aprovisionados (READY) pero ningún camino de código público los invoca.** Decirlo así en el video y en Devpost.
+**Strands Agents orquesta el motor**: el agente (Bedrock `amazon.nova-micro-v1:0`) llama a la herramienta `prepare_draft` y el motor determinista devuelve todas las casillas; el modelo solo resume. Reproducible con `scripts/run_strands_agent.py` (transcript en `demo/expected/strands_run.json`, verificado el 14 sep: 1 llamada a la tool, saldo a favor 3.709.000). El **AgentCore Runtime** ejecuta el entrypoint, que usa el mismo agente con `RENTALISTA_STRANDS=1` y cae al motor directo si el modelo falla (tests en `tests/unit/agent/`). **El Gateway Web Search y el Browser están aprovisionados (READY) pero ningún camino de código público los invoca.** Decirlo así en el video y en Devpost.
 
 > Borrador para revisión. No ha sido presentado ante la DIAN.
 
@@ -30,7 +30,7 @@ El **AgentCore Runtime** ejecuta el entrypoint determinista. **Strands, el model
 | 3 | **API pública con `/draft`, `/coverage`, `/documents`** | **HECHO 14 sep 16:07 COT** | `bash scripts/deploy_api_member.sh` copió el paquete del Lambda master al miembro (`rentalista-api`, mismo CodeSha256). Verificado por CloudFront: `GET /draft` 200 con saldo a favor 3.709.000, `GET /coverage` 200 con 5 filas, `POST /documents` 201 |
 | 4 | Quitar "max 240 UVT" del pitch | Hecho en `docs/devpost-submission-en.md` | El 25 % laboral es renta exenta con tope **790 UVT** (art. 206 num. 10, Ley 2277/2022); el motor usa 240 UVT y lo trata como no constitutivo (H1). No mencionar el tope en el video |
 | 5 | Live View en `/case/browser/` | No demoable | La página desplegada sigue con la guarda `!API_BASE` (env vacío): el chunk no contiene la llamada a `live-view`. Solo si se quiere mostrar: quitar la guarda, rebuild, subir |
-| 6 | `make verify` | Rojo | `ruff format` 3 archivos (`agent/__main__.py`, `ingestion/pdf_facts.py`, `tax/form210.py`), mypy 17 errores. Tests 52 en verde, `ruff check` OK, `tsc` OK |
+| 6 | `make verify` | Rojo | `ruff format` 3 archivos (`agent/__main__.py`, `ingestion/pdf_facts.py`, `tax/form210.py`), mypy 12 errores. Tests 58 en verde, `ruff check` OK, `tsc` OK |
 | 7 | Confirmar ID sintético | Pendiente | `demo/fixtures/reporteExogena2025_demo.xlsx` lleva `1019072850` en las 14 filas (la cabecera dice 123444); el PDF Nequi termina en `2850` |
 
 ---
@@ -51,9 +51,9 @@ El **AgentCore Runtime** ejecuta el entrypoint determinista. **Strands, el model
 | S3 web | `rentalista-web-697020387519` | |
 | Lambda API master | `pi4y909mlf` (cuenta `690968743338`) | **Código actual** (`/draft`, `/coverage` OK) |
 | Lambda API miembro | `rentalista-api` · `lnfsntpv6j` (cuenta `697020387519`) | Origen de CloudFront; **código actual** desde el 14 sep 16:07 COT (mismo paquete que el master, vía `scripts/deploy_api_member.sh`) |
-| AgentCore Runtime | `rentalista_agent-xznI3y9jcZ` | READY; ejecuta el entrypoint determinista |
+| AgentCore Runtime | `rentalista_agent-xznI3y9jcZ` | READY; ejecuta el entrypoint (Strands con `RENTALISTA_STRANDS=1`, si no motor directo). El CodeZip desplegado es anterior a este cambio |
 | Gateway Web Search | `rentalista-websearch2-f29eutucy6` · target `DP0IKFORKR` | READY; sin cliente en el código |
-| Bedrock | `amazon.nova-micro-v1:0` · us-east-1 | sin invocación en el código |
+| Bedrock | `amazon.nova-micro-v1:0` · us-east-1 | invocado por el agente Strands (`scripts/run_strands_agent.py`); no está en el camino HTTP público |
 | AWS profile | `rentalista` · miembro `697020387519` | |
 
 ---
@@ -118,10 +118,10 @@ c137 saldo a favor          3.709.000
 
 | Gate | Resultado |
 |---|---|
-| `pytest` | 52 pasan |
+| `pytest` | 58 pasan (incluye `tests/unit/agent/`: tool `prepare_draft` con dict, orquestación Strands con fallback) |
 | `ruff check` | OK |
 | `ruff format --check` | 3 archivos sin formatear |
-| `mypy src` (strict) | 17 errores en 7 archivos (stubs yaml/openpyxl; `agent/agent.py` 5, `ingestion/exogenous_xlsx.py` 6, `tax/obligation.py` 2, `api/main.py`, `api/store.py`, `rules/validator.py`, `agent/runtime.py` 1 c/u) |
+| `mypy src` (strict) | 12 errores en 6 archivos (stubs yaml/openpyxl; `ingestion/exogenous_xlsx.py` 6, `tax/obligation.py` 2, `agent/agent.py`, `api/main.py`, `api/store.py`, `rules/validator.py` 1 c/u) |
 | `tsc --noEmit` | OK |
 | `rentalista-rules rules/ag2025` | OK |
 
@@ -145,7 +145,7 @@ Con H1 y H2 corregidos el demo sigue dando **saldo a favor**, del orden de 4,6 M
 
 - **P1** ~~CloudFront → Lambda miembro con build anterior~~ resuelto el 14 sep 16:07 COT (ítem 3 de "Qué falta").
 - **P2** Live View UI inerte en el build desplegado (`browser-content.tsx:41`, guarda `!API_BASE`).
-- **P3** `/demo-portal/*` no enrutado; Strands / Bedrock / Gateway sin uso en código; la API no invoca el Runtime.
+- **P3** `/demo-portal/*` no enrutado; Gateway sin uso en código; la API no invoca el Runtime (Strands + Bedrock sí se ejercitan vía script y entrypoint desde el 14 sep).
 - **P4** Clave de idempotencia global (`api/store.py:85`); los jobs distintos de PREPARE_DRAFT quedan ACCEPTED con lock de 10 min; `live-view` firma cualquier `session_id`.
 - **P5** Handler Lambda (Mangum) no está en el repo; `deploy.sh` (nombre con guion, protocolo MCP) y `build_codezip.sh` (no copia `agent.py`) no reproducen lo desplegado.
 - **P6** Rule pack YAML validado, no cargado (la tabla art. 241 sí tiene test de igualdad).
@@ -162,6 +162,7 @@ Tabla art. 241 + tests · números UI = motor (test) · banner DIAN en UI · API
 ```bash
 make install && make test      # 52 tests
 make demo-draft                # regenera real_demo_run.json y demo-draft.json
+AWS_PROFILE=rentalista uv run python scripts/run_strands_agent.py   # Strands + Bedrock -> tool prepare_draft
 uv run uvicorn rentalista.api.main:app --reload     # API + portal local
 cd frontend && npm run build
 

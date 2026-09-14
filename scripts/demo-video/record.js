@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-// Playwright 1.63 (npx cache or `npm i playwright`); set PLAYWRIGHT_PKG to its install dir if require fails.
-const { chromium } = require(process.env.PLAYWRIGHT_PKG || 'playwright');
+const { chromium } = require('/Users/hetmini/.npm/_npx/e41f203b7505f1fb/node_modules/playwright');
 
 const BASE = 'https://deuhmh4dvlr6i.cloudfront.net';
 const DIR = __dirname;
@@ -53,7 +52,7 @@ const CLOSE = `
 <h2>https://deuhmh4dvlr6i.cloudfront.net/en/</h2>
 <p>Code (MIT): github.com/hetdev/renta-lista-agent</p>
 <p><b>Evidence-first. Human-approved. Not filed with DIAN.</b></p>
-<p class="small">Built for the Agents for Humans hackathon · Amazon Bedrock AgentCore</p>`;
+<p class="small">Built with Strands Agents on Amazon Bedrock AgentCore · Agents for Humans hackathon</p>`;
 
 async function overlay(page) { await page.evaluate(OVERLAY); }
 async function caption(page, text, pos = 'bottom') {
@@ -149,15 +148,13 @@ async function moveClick(page, locator, settle = 700) {
     await moveClick(page, page.getByRole('button', { name: 'Preparar borrador' }));
     await page.getByText('Borrador listo (demo)').first().waitFor({ timeout: 20000 });
     await say(page, 'spanish', 'Same engine, Spanish labels');
-    // S7 architecture on GitHub
+    // S7 architecture (local render of docs/architecture.md)
     await caption(page, '');
-    await page.goto('https://github.com/hetdev/renta-lista-agent/blob/main/docs/architecture.md', { waitUntil: 'domcontentloaded' });
-    try { await page.locator('.markdown-body iframe, iframe[src*="viewscreen"]').first().waitFor({ timeout: 20000 }); } catch (e) { log('mermaid iframe not found:', e.message.split('\n')[0]); }
-    await page.waitForTimeout(2500);
+    await page.goto('file://' + path.join(DIR, 'arch.html'), { waitUntil: 'load' });
+    try { await page.locator('svg').first().waitFor({ timeout: 20000 }); } catch (e) { log('mermaid svg not found:', e.message.split('\n')[0]); }
+    await page.waitForTimeout(900);
     await overlay(page);
-    try { const fr = page.locator('.markdown-body iframe, iframe[src*="viewscreen"]').first(); await fr.scrollIntoViewIfNeeded(); await page.mouse.wheel(0, -60); } catch {}
-    await page.waitForTimeout(400);
-    await say(page, 'arch', 'Architecture: solid arrows implemented · dashed planned (Gateway web search, Browser handoff)');
+    await say(page, 'arch', 'Strands Agents + Amazon Bedrock orchestrate the engine tool · solid = implemented · dashed = planned');
     // S8 close
     await caption(page, ''); await page.mouse.move(1265, 705, { steps: 6 });
     await card(page, CLOSE); mark('close'); log('close'); await page.waitForTimeout(hold('close', 1800));

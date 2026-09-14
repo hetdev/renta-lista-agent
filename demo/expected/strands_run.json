@@ -1,0 +1,338 @@
+{
+  "orchestrator": "strands",
+  "model_id": "amazon.nova-micro-v1:0",
+  "tool_calls": 1,
+  "tool_uses": [
+    {
+      "toolUseId": "tooluse_gxcHirahwyQYeEKkU9vymV",
+      "name": "prepare_draft",
+      "input": {
+        "payload": {
+          "case_id": "00000000-0000-4000-8000-000000000210",
+          "profile": {
+            "resident_2025": true,
+            "not_required_accounting": true,
+            "initial_filing": true,
+            "timely_filing": true,
+            "iva_responsible_dec_31": false,
+            "labor_income_only": true,
+            "national_financial_income": true,
+            "assets_only_colombia": true,
+            "no_foreign_currency": true,
+            "no_excluded_facts": true,
+            "absence_attestations": {
+              "pensiones": true,
+              "dividendos": true,
+              "ganancias_ocasionales": true
+            }
+          },
+          "amounts": {
+            "patrimonio_bruto": 186887300,
+            "deudas": 0,
+            "ingresos_brutos": 93579340,
+            "salarios": 89250000,
+            "aportes_salud_pension": 7200000,
+            "rendimientos_financieros": 384670,
+            "no_constitutivos_capital": 213200,
+            "retenciones_fuente": 4635000,
+            "intereses_vivienda": 4800000,
+            "compras_factura_electronica": 12000000
+          },
+          "dependents": 1,
+          "previous_filing": "FIRST",
+          "rule_version": "ag2025-0.1.0"
+        }
+      }
+    }
+  ],
+  "engine_result": {
+    "case_id": "00000000-0000-4000-8000-000000000210",
+    "status": "DRAFT_READY",
+    "must_file": true,
+    "saldo_a_pagar": 0,
+    "saldo_a_favor": 3709000,
+    "blockers": [],
+    "cells": {
+      "29": {
+        "cell": 29,
+        "label": "Gross assets",
+        "amount_cop": 186887300,
+        "formula": "sum(activos)"
+      },
+      "30": {
+        "cell": 30,
+        "label": "Liabilities",
+        "amount_cop": 0,
+        "formula": "sum(pasivos)"
+      },
+      "31": {
+        "cell": 31,
+        "label": "Net assets",
+        "amount_cop": 186887300,
+        "formula": "max(c29-c30, 0)"
+      },
+      "32": {
+        "cell": 32,
+        "label": "Gross employment income",
+        "amount_cop": 89250000,
+        "formula": "salarios+otros"
+      },
+      "33": {
+        "cell": 33,
+        "label": "Non-taxable employment income (25%)",
+        "amount_cop": 11951760,
+        "formula": "min(25% c32, 240 UVT)"
+      },
+      "34": {
+        "cell": 34,
+        "label": "Dependent deduction employment (72 UVT each)",
+        "amount_cop": 3585528,
+        "formula": "72 UVT × min(deps, 4)"
+      },
+      "36": {
+        "cell": 36,
+        "label": "Other exempt employment income",
+        "amount_cop": 0,
+        "formula": "confirmed_facts"
+      },
+      "39": {
+        "cell": 39,
+        "label": "Health and pension contributions",
+        "amount_cop": 7200000,
+        "formula": "aportes obligatorios"
+      },
+      "58": {
+        "cell": 58,
+        "label": "Gross capital income",
+        "amount_cop": 384670,
+        "formula": "rendimientos nacionales"
+      },
+      "28": {
+        "cell": 28,
+        "label": "1% e-invoice purchases",
+        "amount_cop": 120000,
+        "formula": "min(1% compras, 240 UVT)"
+      },
+      "138": {
+        "cell": 138,
+        "label": "Number of dependents",
+        "amount_cop": 1,
+        "formula": "count"
+      },
+      "139": {
+        "cell": 139,
+        "label": "Dependent addition",
+        "amount_cop": 2609468,
+        "formula": "10% x 524 UVT x min(deps,4)"
+      },
+      "92": {
+        "cell": 92,
+        "label": "Exempt income and limited deductions",
+        "amount_cop": 7529468,
+        "formula": "min(exentas+deducc, 40% y 1340 UVT) + c28 + c139"
+      },
+      "93": {
+        "cell": 93,
+        "label": "Net income — general category",
+        "amount_cop": 59154714,
+        "formula": "gravables - c92"
+      },
+      "111": {
+        "cell": 111,
+        "label": "Taxable net income",
+        "amount_cop": 59154714,
+        "formula": "max(c93, 0)"
+      },
+      "116": {
+        "cell": 116,
+        "label": "Net income tax",
+        "amount_cop": 926000,
+        "formula": "tarifa art. 241; red. mil"
+      },
+      "99": {
+        "cell": 99,
+        "label": "Pension income",
+        "amount_cop": 0,
+        "formula": "atestación de ausencia"
+      },
+      "104": {
+        "cell": 104,
+        "label": "Dividends and profit shares",
+        "amount_cop": 0,
+        "formula": "atestación de ausencia"
+      },
+      "112": {
+        "cell": 112,
+        "label": "Occasional gains income",
+        "amount_cop": 0,
+        "formula": "atestación de ausencia"
+      },
+      "130": {
+        "cell": 130,
+        "label": "Prior-year tax advance",
+        "amount_cop": 0,
+        "formula": "declarado; red. mil"
+      },
+      "131": {
+        "cell": 131,
+        "label": "Prior-year credit balance",
+        "amount_cop": 0,
+        "formula": "declarado; red. mil"
+      },
+      "132": {
+        "cell": 132,
+        "label": "Withholdings for the tax year",
+        "amount_cop": 4635000,
+        "formula": "sum; red. mil"
+      },
+      "135": {
+        "cell": 135,
+        "label": "Declared advance payment (art. 807)",
+        "amount_cop": 0,
+        "formula": "0% × prior net tax; sugerido 0"
+      },
+      "136": {
+        "cell": 136,
+        "label": "Penalties",
+        "amount_cop": 0,
+        "formula": "fuera de alcance MVP"
+      },
+      "140": {
+        "cell": 140,
+        "label": "Art. 336-1 cap flag",
+        "amount_cop": 0,
+        "formula": "no aplica al perfil admitido"
+      },
+      "141": {
+        "cell": 141,
+        "label": "Voluntary contribution",
+        "amount_cop": 0,
+        "formula": "cero salvo decisión"
+      },
+      "134": {
+        "cell": 134,
+        "label": "Total amount payable",
+        "amount_cop": 0,
+        "formula": "red. mil"
+      },
+      "137": {
+        "cell": 137,
+        "label": "Total credit balance",
+        "amount_cop": 3709000,
+        "formula": "red. mil"
+      }
+    }
+  },
+  "agent_answer": "The Form 210 draft has been prepared with the following details: must_file is true, saldo_a_pagar is 0, and saldo_a_favor is 3,709,000 COP.",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "text": "Prepare the Form 210 draft for this case by calling the prepare_draft tool exactly once with this payload as the `payload` argument:\n{\"case_id\": \"00000000-0000-4000-8000-000000000210\", \"profile\": {\"resident_2025\": true, \"not_required_accounting\": true, \"initial_filing\": true, \"timely_filing\": true, \"iva_responsible_dec_31\": false, \"labor_income_only\": true, \"national_financial_income\": true, \"assets_only_colombia\": true, \"no_foreign_currency\": true, \"no_excluded_facts\": true, \"absence_attestations\": {\"pensiones\": true, \"dividendos\": true, \"ganancias_ocasionales\": true}}, \"amounts\": {\"patrimonio_bruto\": 186887300, \"deudas\": 0, \"ingresos_brutos\": 93579340, \"salarios\": 89250000, \"aportes_salud_pension\": 7200000, \"rendimientos_financieros\": 384670, \"no_constitutivos_capital\": 213200, \"retenciones_fuente\": 4635000, \"intereses_vivienda\": 4800000, \"compras_factura_electronica\": 12000000}, \"dependents\": 1, \"previous_filing\": \"FIRST\", \"rule_version\": \"ag2025-0.1.0\"}\nThen answer in one sentence with must_file, saldo_a_pagar and saldo_a_favor taken verbatim from the tool result. Do not compute or change any amount yourself."
+        }
+      ],
+      "tracking_id": "d6ba319d-1292-475b-8de0-8dd9135d9931"
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "text": "<thinking> To prepare the Form 210 draft, I will call the `prepare_draft` tool with the provided payload. I will then extract and present the `must_file`, `saldo_a_pagar`, and `saldo_a_favor` values from the tool's result without altering any amounts.</thinking>\n"
+        },
+        {
+          "toolUse": {
+            "toolUseId": "tooluse_gxcHirahwyQYeEKkU9vymV",
+            "name": "prepare_draft",
+            "input": {
+              "payload": {
+                "case_id": "00000000-0000-4000-8000-000000000210",
+                "profile": {
+                  "resident_2025": true,
+                  "not_required_accounting": true,
+                  "initial_filing": true,
+                  "timely_filing": true,
+                  "iva_responsible_dec_31": false,
+                  "labor_income_only": true,
+                  "national_financial_income": true,
+                  "assets_only_colombia": true,
+                  "no_foreign_currency": true,
+                  "no_excluded_facts": true,
+                  "absence_attestations": {
+                    "pensiones": true,
+                    "dividendos": true,
+                    "ganancias_ocasionales": true
+                  }
+                },
+                "amounts": {
+                  "patrimonio_bruto": 186887300,
+                  "deudas": 0,
+                  "ingresos_brutos": 93579340,
+                  "salarios": 89250000,
+                  "aportes_salud_pension": 7200000,
+                  "rendimientos_financieros": 384670,
+                  "no_constitutivos_capital": 213200,
+                  "retenciones_fuente": 4635000,
+                  "intereses_vivienda": 4800000,
+                  "compras_factura_electronica": 12000000
+                },
+                "dependents": 1,
+                "previous_filing": "FIRST",
+                "rule_version": "ag2025-0.1.0"
+              }
+            }
+          }
+        }
+      ],
+      "metadata": {
+        "usage": {
+          "inputTokens": 929,
+          "outputTokens": 460,
+          "totalTokens": 1389
+        },
+        "metrics": {
+          "latencyMs": 1807,
+          "timeToFirstByteMs": 541
+        }
+      },
+      "tracking_id": "40033219-fee5-4dd5-822d-718818e49518"
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "toolResult": {
+            "toolUseId": "tooluse_gxcHirahwyQYeEKkU9vymV",
+            "status": "success",
+            "content": [
+              {
+                "text": "{\"case_id\": \"00000000-0000-4000-8000-000000000210\", \"status\": \"DRAFT_READY\", \"must_file\": true, \"saldo_a_pagar\": 0, \"saldo_a_favor\": 3709000, \"blockers\": [], \"cells\": {\"29\": {\"cell\": 29, \"label\": \"Gross assets\", \"amount_cop\": 186887300, \"formula\": \"sum(activos)\"}, \"30\": {\"cell\": 30, \"label\": \"Liabilities\", \"amount_cop\": 0, \"formula\": \"sum(pasivos)\"}, \"31\": {\"cell\": 31, \"label\": \"Net assets\", \"amount_cop\": 186887300, \"formula\": \"max(c29-c30, 0)\"}, \"32\": {\"cell\": 32, \"label\": \"Gross employment income\", \"amount_cop\": 89250000, \"formula\": \"salarios+otros\"}, \"33\": {\"cell\": 33, \"label\": \"Non-taxable employment income (25%)\", \"amount_cop\": 11951760, \"formula\": \"min(25% c32, 240 UVT)\"}, \"34\": {\"cell\": 34, \"label\": \"Dependent deduction employment (72 UVT each)\", \"amount_cop\": 3585528, \"formula\": \"72 UVT × min(deps, 4)\"}, \"36\": {\"cell\": 36, \"label\": \"Other exempt employment income\", \"amount_cop\": 0, \"formula\": \"confirmed_facts\"}, \"39\": {\"cell\": 39, \"label\": \"Health and pension contributions\", \"amount_cop\": 7200000, \"formula\": \"aportes obligatorios\"}, \"58\": {\"cell\": 58, \"label\": \"Gross capital income\", \"amount_cop\": 384670, \"formula\": \"rendimientos nacionales\"}, \"28\": {\"cell\": 28, \"label\": \"1% e-invoice purchases\", \"amount_cop\": 120000, \"formula\": \"min(1% compras, 240 UVT)\"}, \"138\": {\"cell\": 138, \"label\": \"Number of dependents\", \"amount_cop\": 1, \"formula\": \"count\"}, \"139\": {\"cell\": 139, \"label\": \"Dependent addition\", \"amount_cop\": 2609468, \"formula\": \"10% x 524 UVT x min(deps,4)\"}, \"92\": {\"cell\": 92, \"label\": \"Exempt income and limited deductions\", \"amount_cop\": 7529468, \"formula\": \"min(exentas+deducc, 40% y 1340 UVT) + c28 + c139\"}, \"93\": {\"cell\": 93, \"label\": \"Net income — general category\", \"amount_cop\": 59154714, \"formula\": \"gravables - c92\"}, \"111\": {\"cell\": 111, \"label\": \"Taxable net income\", \"amount_cop\": 59154714, \"formula\": \"max(c93, 0)\"}, \"116\": {\"cell\": 116, \"label\": \"Net income tax\", \"amount_cop\": 926000, \"formula\": \"tarifa art. 241; red. mil\"}, \"99\": {\"cell\": 99, \"label\": \"Pension income\", \"amount_cop\": 0, \"formula\": \"atestación de ausencia\"}, \"104\": {\"cell\": 104, \"label\": \"Dividends and profit shares\", \"amount_cop\": 0, \"formula\": \"atestación de ausencia\"}, \"112\": {\"cell\": 112, \"label\": \"Occasional gains income\", \"amount_cop\": 0, \"formula\": \"atestación de ausencia\"}, \"130\": {\"cell\": 130, \"label\": \"Prior-year tax advance\", \"amount_cop\": 0, \"formula\": \"declarado; red. mil\"}, \"131\": {\"cell\": 131, \"label\": \"Prior-year credit balance\", \"amount_cop\": 0, \"formula\": \"declarado; red. mil\"}, \"132\": {\"cell\": 132, \"label\": \"Withholdings for the tax year\", \"amount_cop\": 4635000, \"formula\": \"sum; red. mil\"}, \"135\": {\"cell\": 135, \"label\": \"Declared advance payment (art. 807)\", \"amount_cop\": 0, \"formula\": \"0% × prior net tax; sugerido 0\"}, \"136\": {\"cell\": 136, \"label\": \"Penalties\", \"amount_cop\": 0, \"formula\": \"fuera de alcance MVP\"}, \"140\": {\"cell\": 140, \"label\": \"Art. 336-1 cap flag\", \"amount_cop\": 0, \"formula\": \"no aplica al perfil admitido\"}, \"141\": {\"cell\": 141, \"label\": \"Voluntary contribution\", \"amount_cop\": 0, \"formula\": \"cero salvo decisión\"}, \"134\": {\"cell\": 134, \"label\": \"Total amount payable\", \"amount_cop\": 0, \"formula\": \"red. mil\"}, \"137\": {\"cell\": 137, \"label\": \"Total credit balance\", \"amount_cop\": 3709000, \"formula\": \"red. mil\"}}}"
+              }
+            ]
+          }
+        }
+      ],
+      "tracking_id": "14738660-abea-407a-8d5e-1d23a4dfdb62"
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "text": "The Form 210 draft has been prepared with the following details: must_file is true, saldo_a_pagar is 0, and saldo_a_favor is 3,709,000 COP."
+        }
+      ],
+      "metadata": {
+        "usage": {
+          "inputTokens": 2807,
+          "outputTokens": 51,
+          "totalTokens": 2858
+        },
+        "metrics": {
+          "latencyMs": 420,
+          "timeToFirstByteMs": 317
+        }
+      },
+      "tracking_id": "93a3198b-5e5e-49eb-b8f7-0416ddbc6fb4"
+    }
+  ]
+}

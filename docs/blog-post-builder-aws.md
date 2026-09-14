@@ -35,7 +35,7 @@ Document recovery follows the same idea. A portal directory (seeded for the demo
 ## What runs on AWS
 
 - **Amazon Bedrock AgentCore Runtime** hosts the agent entrypoint as a CodeZip. The entrypoint accepts a structured command envelope (`PREPARE_DRAFT`, `FIND_MISSING_DOCUMENTS`, `RESUME_AFTER_USER_ACTION`, ...) and rejects free-form prompts.
-- **Strands Agents** wraps the engine as a `prepare_draft` tool with **Amazon Bedrock** (Nova Micro) as the model, so the model can orchestrate but never compute.
+- **Strands Agents** with **Amazon Bedrock** (Nova Micro) orchestrates the `prepare_draft` tool: the model decides to call it, the engine returns every cell, and the model only summarises. One command reproduces it: `scripts/run_strands_agent.py`, and the AgentCore entrypoint runs the same agent with a direct-engine fallback.
 - **AgentCore Gateway** with the Web Search tool and **AgentCore Browser** with Live View (signed URLs of at most 300 seconds) are provisioned for the certificate-recovery flow; wiring them into the public path is the next step.
 - The public demo is a Next.js static export on **Amazon S3** behind **Amazon CloudFront**, with a FastAPI API on **AWS Lambda** under `/api/v1/*`.
 

@@ -17,7 +17,7 @@ Honest snapshot. Full findings and priorities in [DOC.md](DOC.md).
 | Ingestion (DIAN XLSX + Nequi PDF) | **Working** on repo fixtures (`demo/fixtures/`) |
 | Public API | **Working** on CloudFront: create case → profile → `PREPARE_DRAFT` (**SUCCEEDED**, case **DRAFT_READY**) → `GET /draft` (engine cells, credit balance 3,709,000), `GET /coverage` (5 exogenous rows), `POST/GET /documents` |
 | Web UI (Next.js, es/en) | Landing, demo, profile, draft (engine snapshot + bilingual cell ledger + DIAN disclaimer). Coverage shows the API's exogenous rows next to a local inventory; documents are registered through the API. Live View page present but inert in the deployed build |
-| Strands / Bedrock / Gateway | Resources **READY**; Strands smoke-tested locally; **not on the public demo path** |
+| Strands Agents / Bedrock / Gateway | **Strands Agents orchestrates the engine**: the agent (Amazon Bedrock `amazon.nova-micro-v1:0`) calls the `prepare_draft` tool and the deterministic engine returns every cell; the model only summarises. Reproduce with `AWS_PROFILE=<profile> uv run python scripts/run_strands_agent.py` (transcript: `demo/expected/strands_run.json`). The AgentCore Runtime entrypoint uses the same agent when `RENTALISTA_STRANDS=1`, with a direct-engine fallback. Gateway Web Search and Browser Live View are provisioned, not on the public path yet |
 | Synthetic portal (OTP `123456`) | In FastAPI (`/demo-portal`); reachable only with the API running locally |
 
 ## Demo numbers (engine, rounded to thousands)
@@ -42,10 +42,10 @@ See [docs/architecture.md](docs/architecture.md). Solid arrows are implemented; 
 
 - Deterministic tax engine in `src/rentalista/tax/`
 - FastAPI on Lambda behind CloudFront `/api/v1/*` (in-memory store)
-- **Amazon Bedrock AgentCore** Runtime `rentalista_agent` (READY) running the deterministic entrypoint
+- **Strands Agents** + **Amazon Bedrock** `amazon.nova-micro-v1:0` (us-east-1): orchestration through the `prepare_draft` tool, never arithmetic
+- **Amazon Bedrock AgentCore** Runtime `rentalista_agent` (READY) running the agent entrypoint (Strands orchestration behind `RENTALISTA_STRANDS=1`, engine fallback)
 - **Gateway** `rentalista-websearch2` with **Web Search Tool** target (READY, unused by code so far)
 - **Browser** `aws.browser.v1` Live View endpoint (signed URL ≤300 s; UI not wired in the deployed build)
-- **Amazon Bedrock** model `amazon.nova-micro-v1:0` (us-east-1, unused by code so far)
 - Public API: `https://deuhmh4dvlr6i.cloudfront.net/api/v1/`
 
 ### Deployed resources (us-east-1)
@@ -70,8 +70,11 @@ Demo uses **synthetic data only**; no real taxpayer PII.
 ```bash
 # Python
 make install
-make test        # 52 tests
-make verify      # lint + typecheck + test (currently red: ruff format 3 files, mypy 17 errors)
+make test        # 58 tests
+make verify      # lint + typecheck + test (currently red: ruff format 3 files, mypy 12 errors)
+
+# Strands agent on Amazon Bedrock Nova Micro calling the engine tool (needs bedrock:InvokeModel)
+AWS_PROFILE=<profile> uv run python scripts/run_strands_agent.py
 
 # API locally (also serves the synthetic portal at /demo-portal/*)
 uv run uvicorn rentalista.api.main:app --reload
