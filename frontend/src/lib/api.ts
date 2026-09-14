@@ -80,8 +80,8 @@ function computeAdmitted(body: Record<string, unknown>): boolean {
   return required.every((key) => body[key] === true);
 }
 
-export function formatCOP(value: number): string {
-  return new Intl.NumberFormat("es-CO", {
+export function formatCOP(value: number, locale: "es" | "en" = "es"): string {
+  return new Intl.NumberFormat(locale === "en" ? "en-US" : "es-CO", {
     style: "currency",
     currency: "COP",
     maximumFractionDigits: 0,

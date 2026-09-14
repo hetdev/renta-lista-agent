@@ -27,7 +27,11 @@ def run_command(payload: dict[str, Any]) -> dict[str, Any]:
             dependents=int(payload.get("dependents", 0)),
             previous_filing=payload.get("previous_filing", "FIRST"),
         )
-        draft = calculate_form210(facts, rule_version=payload.get("rule_version", "ag2025-0.1.0"))
+        draft = calculate_form210(
+            facts,
+            rule_version=payload.get("rule_version", "ag2025-0.1.0"),
+            locale=payload.get("locale", "es"),
+        )
         return {
             "case_id": payload["case_id"],
             "status": CaseStatus.DRAFT_READY if not draft.blockers else CaseStatus.NEEDS_REVIEW,

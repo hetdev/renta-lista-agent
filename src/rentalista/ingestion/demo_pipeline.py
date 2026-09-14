@@ -111,8 +111,40 @@ def run_pipeline(
             },
             "dependents": 1,
             "previous_filing": "FIRST",
+            "locale": "es",
         }
     )
+    # Bilingual cell labels for the UI (same amounts, only labels change).
+    draft_en = run_command(
+        {
+            "command": "PREPARE_DRAFT",
+            "case_id": case_id or str(uuid4()),
+            "profile": DEMO_PROFILE,
+            "amounts": {
+                "patrimonio_bruto": m["patrimonio"],
+                "deudas": 0,
+                "ingresos_brutos": m["ingresos"],
+                "salarios": m["salarios"],
+                "aportes_salud_pension": m["aportes"],
+                "rendimientos_financieros": m["rendimientos"],
+                "no_constitutivos_capital": m["no_const"],
+                "retenciones_fuente": m["retenciones"],
+                "intereses_vivienda": m["intereses_vivienda"],
+                "compras_factura_electronica": m["compras_factura"],
+            },
+            "dependents": 1,
+            "previous_filing": "FIRST",
+            "locale": "en",
+        }
+    )
+    draft["labels"] = {
+        "es": {k: v["label"] for k, v in draft["cells"].items()},
+        "en": {k: v["label"] for k, v in draft_en["cells"].items()},
+    }
+    draft["disclaimer"] = {
+        "es": "Borrador para revisión. No ha sido presentado ante la DIAN.",
+        "en": "Draft for review only. Not filed with DIAN.",
+    }
     by_reporter: defaultdict[str, int] = defaultdict(int)
     for r in rows:
         by_reporter[str(r.get("reporter") or "")] += int(r["amount_cop"])

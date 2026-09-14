@@ -25,6 +25,9 @@ type DraftState = {
   saldo_a_pagar: number;
   saldo_a_favor: number;
   evidence: Record<string, string>;
+  cells?: Record<string, { amount_cop: number; label?: string; formula?: string }>;
+  labels?: Record<string, string>;
+  disclaimer?: string;
 };
 
 const EMPTY: DraftState = {
@@ -44,8 +47,34 @@ const EMPTY: DraftState = {
 };
 
 /** Engine golden for the synthetic case (frontend/src/lib/demo-draft.json). */
-function fromEngine(): DraftState {
+function fromEngine(locale: Locale): DraftState {
   const c = demoDraft.cells as Record<string, { amount_cop: number }>;
+  const labels = (demoDraft.labels as Record<string, Record<string, string>>)?.[locale] ?? {};
+  const ev = {
+    laboral: locale === "en" ? "cell 32 · confirmed salaries" : "casilla 32 · salarios confirmados",
+    capital:
+      locale === "en"
+        ? "cell 58 · national financial yields"
+        : "casilla 58 · rendimientos nacionales",
+    rentas_exentas:
+      locale === "en"
+        ? "cell 92 · 40%/1340 UVT cap + c28 + c139"
+        : "casilla 92 · tope 40%/1340 UVT + c28 + c139",
+    deducciones:
+      locale === "en"
+        ? "cell 139 · dependent addition"
+        : "casilla 139 · adición dependientes",
+    renta_liquida:
+      locale === "en" ? "cell 93 · taxable − c92" : "casilla 93 · gravables - c92",
+    impuesto:
+      locale === "en"
+        ? "cell 116 · art. 241 table ag2025-0.1.0"
+        : "casilla 116 · tarifa art. 241 ag2025-0.1.0",
+    anticipos: locale === "en" ? "cell 132 · withholdings" : "casilla 132 · retenciones",
+    saldo: locale === "en" ? "cells 134/137 · invariants" : "casillas 134/137 · invariantes",
+    c33: labels["33"] ?? "c33",
+    c34: labels["34"] ?? "c34",
+  };
   return {
     status: "ready",
     laboral: c["32"]?.amount_cop ?? 0,
@@ -59,20 +88,16 @@ function fromEngine(): DraftState {
     saldo: demoDraft.saldo_a_pagar || demoDraft.saldo_a_favor,
     saldo_a_pagar: demoDraft.saldo_a_pagar,
     saldo_a_favor: demoDraft.saldo_a_favor,
-    evidence: {
-      laboral: "casilla 32 · salarios confirmados",
-      capital: "casilla 58 · rendimientos nacionales",
-      rentas_exentas: "casilla 92 · tope 40%/1340 UVT + c28 + c139",
-      deducciones: "casilla 139 · adición dependientes",
-      renta_liquida: "casilla 93 · gravables - c92",
-      impuesto: "casilla 116 · tarifa art. 241 ag2025-0.1.0",
-      anticipos: "casilla 132 · retenciones",
-      saldo: "casillas 134/137 · invariantes",
-    },
+    evidence: ev,
+    cells: c,
+    labels,
+    disclaimer:
+      (demoDraft.disclaimer as Record<string, string>)?.[locale] ??
+      (locale === "en"
+        ? "Draft for review only. Not filed with DIAN."
+        : "Borrador para revisión. No ha sido presentado ante la DIAN."),
   };
 }
-
-const ENGINE_DRAFT = fromEngine();
 
 export function DraftContent({ locale, messages }: { locale: Locale; messages: Messages }) {
   return (
@@ -120,10 +145,11 @@ function DraftPanel({
   function prepare() {
     if (!caseId) return;
     const id = caseId;
+    const next = fromEngine(locale);
     setBusy(true);
     window.setTimeout(() => {
-      setDraft(ENGINE_DRAFT);
-      saveCaseBlob(id, "draft", ENGINE_DRAFT);
+      setDraft(next);
+      saveCaseBlob(id, "draft", next);
       setBusy(false);
     }, 400);
   }
@@ -161,9 +187,12 @@ function DraftPanel({
         <p className="text-xs text-slate-500">
           {messages.draft.demoValues} · engine ag2025-0.1.0 ·{" "}
           {draft.saldo_a_favor > 0
-            ? `saldo a favor ${formatCOP(draft.saldo_a_favor)}`
-            : `saldo a pagar ${formatCOP(draft.saldo_a_pagar)}`}
+            ? `${locale === "en" ? "credit balance" : "saldo a favor"} ${formatCOP(draft.saldo_a_favor)}`
+            : `${locale === "en" ? "amount payable" : "saldo a pagar"} ${formatCOP(draft.saldo_a_pagar)}`}
         </p>
+        {draft.disclaimer ? (
+          <p className="text-xs font-medium text-amber-800">{draft.disclaimer}</p>
+        ) : null}
       </div>
 
       {draft.status === "ready" ? (
@@ -226,6 +255,29 @@ function DraftPanel({
                 {draft.evidence[openCell]}
               </p>
             </div>
+          ) : null}
+
+          {draft.cells ? (
+            <section className="card md:col-span-2">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+                {locale === "en" ? "Form 210 cell ledger" : "Ledger de casillas Form 210"}
+              </h2>
+              <ul className="grid gap-1 sm:grid-cols-2">
+                {(["33", "34", "92", "116", "132", "134", "137"] as const).map((k) => {
+                  const cell = draft.cells?.[k];
+                  if (!cell) return null;
+                  return (
+                    <li key={k} className="flex items-center justify-between gap-2 text-xs">
+                      <span className="text-slate-600">
+                        <span className="font-mono text-slate-400">c{k}</span>{" "}
+                        {draft.labels?.[k] ?? cell.label}
+                      </span>
+                      <span className="font-mono">{formatCOP(cell.amount_cop)}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
           ) : null}
         </div>
       ) : null}

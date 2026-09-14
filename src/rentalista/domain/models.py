@@ -256,6 +256,7 @@ class Draft210(StrictModel):
     draft_version: int = 1
     rule_version: str
     tax_year: Literal[2025] = 2025
+    locale: Literal["es", "en"] = "es"
     must_file: bool
     obligation_reasons: list[ObligationCriterion] = Field(default_factory=list)
     cells: dict[int, CellResult] = Field(default_factory=dict)

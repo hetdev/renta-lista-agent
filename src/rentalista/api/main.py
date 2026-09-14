@@ -130,6 +130,7 @@ def post_job(
                     "profile": case.profile.model_dump(),
                     "amounts": default_demo_amounts(),
                     "dependents": case.profile.dependents_confirmed or 1,
+                    "locale": case.locale,
                 }
             )
             case.draft_version = (case.draft_version or 0) + 1

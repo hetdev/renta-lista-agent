@@ -52,3 +52,7 @@ def test_demo_jsons_match_engine() -> None:
     assert on_disk_draft["saldo_a_pagar"] == normalised["draft"]["saldo_a_pagar"]
     assert on_disk_draft["saldo_a_favor"] == normalised["draft"]["saldo_a_favor"]
     assert on_disk_run["draft"]["cells"] == normalised["draft"]["cells"]
+    # bilingual labels present
+    assert on_disk_draft["labels"]["es"]["116"]
+    assert on_disk_draft["labels"]["en"]["116"] == "Net income tax"
+    assert "DIAN" in on_disk_draft["disclaimer"]["es"]

@@ -142,7 +142,7 @@
       "cell": 135,
       "label": "Anticipo declarado (art. 807)",
       "amount_cop": 0,
-      "formula": "0% × impuesto neto año anterior; sugerido 0"
+      "formula": "0% × prior net tax; sugerido 0"
     },
     "136": {
       "cell": 136,
@@ -174,5 +174,71 @@
       "amount_cop": 3709000,
       "formula": "red. mil"
     }
+  },
+  "labels": {
+    "es": {
+      "29": "Patrimonio bruto",
+      "30": "Deudas",
+      "31": "Patrimonio líquido",
+      "32": "Ingresos brutos rentas de trabajo",
+      "33": "Ingresos no constitutivos trabajo (25%)",
+      "34": "Deducción dependientes trabajo (72 UVT c/u)",
+      "36": "Otras rentas exentas trabajo",
+      "39": "Aportes salud y pensión",
+      "58": "Ingresos brutos rentas de capital",
+      "28": "1% compras con factura electrónica",
+      "138": "Número de dependientes",
+      "139": "Adición por dependientes",
+      "92": "Rentas exentas y deducciones limitadas",
+      "93": "Renta líquida cédula general",
+      "111": "Renta líquida gravable",
+      "116": "Impuesto neto de renta",
+      "99": "Ingresos por pensiones",
+      "104": "Dividendos y participaciones",
+      "112": "Ingresos ganancias ocasionales",
+      "130": "Anticipo renta año anterior",
+      "131": "Saldo a favor año anterior",
+      "132": "Retenciones año gravable",
+      "135": "Anticipo declarado (art. 807)",
+      "136": "Sanciones",
+      "140": "Marca tope art. 336-1",
+      "141": "Aporte voluntario",
+      "134": "Total saldo a pagar",
+      "137": "Total saldo a favor"
+    },
+    "en": {
+      "29": "Gross assets",
+      "30": "Liabilities",
+      "31": "Net assets",
+      "32": "Gross employment income",
+      "33": "Non-taxable employment income (25%)",
+      "34": "Dependent deduction employment (72 UVT each)",
+      "36": "Other exempt employment income",
+      "39": "Health and pension contributions",
+      "58": "Gross capital income",
+      "28": "1% e-invoice purchases",
+      "138": "Number of dependents",
+      "139": "Dependent addition",
+      "92": "Exempt income and limited deductions",
+      "93": "Net income — general category",
+      "111": "Taxable net income",
+      "116": "Net income tax",
+      "99": "Pension income",
+      "104": "Dividends and profit shares",
+      "112": "Occasional gains income",
+      "130": "Prior-year tax advance",
+      "131": "Prior-year credit balance",
+      "132": "Withholdings for the tax year",
+      "135": "Declared advance payment (art. 807)",
+      "136": "Penalties",
+      "140": "Art. 336-1 cap flag",
+      "141": "Voluntary contribution",
+      "134": "Total amount payable",
+      "137": "Total credit balance"
+    }
+  },
+  "disclaimer": {
+    "es": "Borrador para revisión. No ha sido presentado ante la DIAN.",
+    "en": "Draft for review only. Not filed with DIAN."
   }
 }
