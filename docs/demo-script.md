@@ -1,6 +1,6 @@
 # Demo script — RentaLista (4:40)
 
-> **Estado 14 sep 2026 (segunda revisión, ver DOC.md):** el video final es `docs/rentalista-demo-live.mp4` (**3:10**, grabación real con Playwright + narración EN, scripts en `scripts/demo-video/`); este guion es la versión larga y solo se grabaron las escenas demoables. Demoable hoy en la URL pública: landing, crear caso y perfil vía API, borrador con el snapshot del motor (**saldo a favor 3.709.000**, c33/c34 en el ledger) y banner DIAN en footer y borrador. **No demoable hoy:** cobertura desde la API (el Lambda de CloudFront es un build anterior; la UI muestra el mock local), Live View (página inerte en el build desplegado), portal `/demo-portal` (no enrutado en CloudFront) y Strands / Bedrock / Gateway (sin código que los invoque). No afirmar "máximo 240 UVT" para el 25 % laboral (hallazgo H1).
+> **Estado 14 sep 2026 (segunda revisión, ver DOC.md):** el video final es `docs/rentalista-demo-live.mp4` (**3:10**, grabación real con Playwright + narración EN, scripts en `scripts/demo-video/`); este guion es la versión larga y solo se grabaron las escenas demoables. Demoable hoy en la URL pública: landing, crear caso y perfil vía API, borrador con el snapshot del motor (**saldo a favor 3.709.000**, c33/c34 en el ledger) y banner DIAN en footer y borrador. Desde las 16:07 COT la API pública también sirve `GET /draft`, `GET /coverage` (5 filas de exógena, visibles en la página de cobertura) y `/documents`. **No demoable hoy:** Live View (página inerte en el build desplegado), portal `/demo-portal` (no enrutado en CloudFront) y Strands / Bedrock / Gateway (sin código que los invoque). No afirmar "máximo 240 UVT" para el 25 % laboral (hallazgo H1).
 
 Pitch the three Devpost questions **literally** in the first 25s, then demo.
 
@@ -19,7 +19,7 @@ On-screen banner: `Borrador para revisión. No ha sido presentado ante la DIAN.`
 ## 0:45–2:20 Coverage → missing cert → portal search (**no demoable hoy**)
 1. Open https://deuhmh4dvlr6i.cloudfront.net/en/
 2. Load the synthetic case.
-3. Show coverage matrix: rows from exogenous Excel; one `DOCUMENT_MISSING`. *(hoy: mock local; `GET /coverage` devuelve 5 filas fijas pero no está en el Lambda de CloudFront)*
+3. Show coverage matrix: rows from exogenous Excel; one `DOCUMENT_MISSING`. *(hoy: la página muestra el inventario local y, para casos creados por la API, la tabla "Exogenous rows (API)" con 5 filas fijas de `GET /coverage`)*
 4. Portal search: **real** web search for a real reporter name; **seeded directory** for fictional `Banco Sintético Andino` (say this out loud). *(hoy: solo el proveedor sembrado, en tests)*
 5. Show decoys (lookalike domain, shortener) rejected by policy. *(hoy: solo en tests)*
 
@@ -32,7 +32,7 @@ On-screen banner: `Borrador para revisión. No ha sido presentado ante la DIAN.`
 - Exogenous vs certificate mismatch → closed question → user chooses → ledger records actor + timestamp.
 
 ## 3:35–4:05 Draft + ledger (demoable)
-- `Prepare draft` → cells from the **deterministic engine** (not the LLM). *(hoy: snapshot `demo-draft.json` generado por el motor; `GET /draft` existe pero no en el Lambda de CloudFront)*
+- `Prepare draft` → cells from the **deterministic engine** (not the LLM). *(hoy: la UI usa el snapshot `demo-draft.json` generado por el motor; `GET /draft` ya responde en la API pública con los mismos números)*
 - Open one cell (e.g. 92) → formula, 28/139 outside the cap, rule version.
 - Saldo a pagar / a favor with invariant (never both). *(saldo a favor 3.709.000 con las reglas actuales; provisional, ver H1/H2 en DOC.md)*
 

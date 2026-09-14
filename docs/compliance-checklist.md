@@ -15,7 +15,7 @@
 ## Do not claim in the video or on the form (not true on the public demo today)
 - Strands / Bedrock model / Web Search / Live View as working: resources are READY but no public code path invokes them; the Live View page is inert in the deployed build
 - "25% labor max 240 UVT": the statute (art. 206 num. 10, Ley 2277/2022) makes it exempt income capped at 790 UVT inside the 40% limit (DOC.md H1)
-- Coverage rows coming from the API: CloudFront serves an older Lambda build, so the UI shows the local mock (DOC.md item 3)
+- (resolved 14 Sep 16:07 COT) Coverage rows and `GET /draft` now come from the API through CloudFront; the coverage page shows the "Exogenous rows (API)" table for API-created cases
 
 ## Pitch phrases (must be in the video)
 1. Problem: …

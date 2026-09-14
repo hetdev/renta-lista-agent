@@ -44,3 +44,6 @@ frontend/out/
 frontend/.next/
 .github/workflows/
 docs/*.mp4
+
+# Claude Code personal overrides
+.claude/settings.local.json

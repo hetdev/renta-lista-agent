@@ -15,8 +15,8 @@ Honest snapshot. Full findings and priorities in [DOC.md](DOC.md).
 |---|---|
 | Deterministic Form 210 engine | **Working.** Art. 241 table (tested against the statute and the rule-pack YAML), art. 577 rounding, bilingual **es/en** cell labels. 25% labor rule and 72 UVT/dependent are present but **provisional**: the statute treats the 25% as exempt income capped at 790 UVT inside the 40% limit, and dependents are currently deducted twice (DOC.md H1–H2). 52 tests green. |
 | Ingestion (DIAN XLSX + Nequi PDF) | **Working** on repo fixtures (`demo/fixtures/`) |
-| Public API | **Working** on CloudFront for create case → profile → `PREPARE_DRAFT` (**SUCCEEDED**, case **DRAFT_READY**). `GET /draft`, `GET /coverage` and `/documents` exist in code, but the Lambda behind CloudFront runs an older build and returns 404 for them today |
-| Web UI (Next.js, es/en) | Landing, demo, profile, draft (engine snapshot + bilingual cell ledger + DIAN disclaimer). Documents/coverage call the API and fall back to a local mock, which is what the public build shows today. Live View page present but inert in the deployed build |
+| Public API | **Working** on CloudFront: create case → profile → `PREPARE_DRAFT` (**SUCCEEDED**, case **DRAFT_READY**) → `GET /draft` (engine cells, credit balance 3,709,000), `GET /coverage` (5 exogenous rows), `POST/GET /documents` |
+| Web UI (Next.js, es/en) | Landing, demo, profile, draft (engine snapshot + bilingual cell ledger + DIAN disclaimer). Coverage shows the API's exogenous rows next to a local inventory; documents are registered through the API. Live View page present but inert in the deployed build |
 | Strands / Bedrock / Gateway | Resources **READY**; Strands smoke-tested locally; **not on the public demo path** |
 | Synthetic portal (OTP `123456`) | In FastAPI (`/demo-portal`); reachable only with the API running locally |
 
@@ -56,7 +56,7 @@ See [docs/architecture.md](docs/architecture.md). Solid arrows are implemented; 
 | **Public API** | `https://deuhmh4dvlr6i.cloudfront.net/api/v1/` |
 | Web bucket (public website, synthetic only) | `rentalista-web-697020387519` |
 | Lambda API, master account | API Gateway `pi4y909mlf` (current code) |
-| Lambda API, member account | `rentalista-api` · API Gateway `lnfsntpv6j` (older build; CloudFront origin today) |
+| Lambda API, member account | `rentalista-api` · API Gateway `lnfsntpv6j` (CloudFront origin; same package as master since 14 Sep) |
 | AgentCore Runtime | `rentalista_agent-xznI3y9jcZ` READY |
 | AgentCore Gateway | `rentalista-websearch2-f29eutucy6` READY |
 | Web Search target | `DP0IKFORKR` (connector `web-search` 1.2.0) |

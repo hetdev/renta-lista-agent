@@ -7,7 +7,7 @@ Dashed arrows and nodes: planned, not wired yet (state at the 11 Sep 2026 code r
 flowchart TB
   User["User browser"] --> CF["CloudFront"]
   CF --> S3Web["S3 static Next.js es/en"]
-  CF -->|"/api/v1/* (API 404s rewritten to index.html 200)"| API["FastAPI on Lambda, in-memory store"]
+  CF -->|"/api/v1/*"| API["FastAPI on Lambda, in-memory store"]
   API --> Engine["Deterministic Form 210 engine"]
   API --> Portal["demo-portal synthetic OTP (local API only)"]
   Script["scripts/run_demo_docs.py"] --> Ingest["XLSX DIAN layout + Nequi PDF ingestion"]

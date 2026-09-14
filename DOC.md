@@ -25,9 +25,9 @@ El **AgentCore Runtime** ejecuta el entrypoint determinista. **Strands, el model
 
 | # | Ítem | Estado | Notas |
 |---|---|---|---|
-| 1 | **Subir el video y pegar la URL** | Grabado en vivo: `docs/rentalista-demo-live.mp4`, 3:10, 1280×720, narración EN + subtítulos (gitignored); scripts en `scripts/demo-video/`. El anterior (`rentalista-demo.mp4`, 1:10) era una presentación de capturas | Subir a YouTube/Vimeo público; las 3 frases del pitch van en la tarjeta inicial y en la voz; pegar la URL en `docs/devpost-submission-en.md` y en Devpost |
+| 1 | **Video subido** | **HECHO**: https://www.youtube.com/watch?v=qnakivEdego (`docs/rentalista-demo-live.mp4`, 3:10, demo real con narración EN; scripts en `scripts/demo-video/`) | Pegar la URL en Devpost |
 | 2 | **Enviar Devpost + Builder ID email** | FALTA | Corte interno 15:00 COT · límite 19:00 COT; capturar confirmación `submitted` |
-| 3 | **API pública sin `/draft`, `/coverage`, `/documents`** | FALTA | CloudFront apunta al Lambda de la cuenta miembro (`lnfsntpv6j`), que corre un zip anterior a `7a7d139`. El Lambda de la cuenta master (`pi4y909mlf`) sí tiene las rutas y devuelve el draft con 3.709.000 (probado e2e). Arreglo: redeploy del zip actual en `rentalista-api` (miembro) o reapuntar el origen `/api/*` de CloudFront a `pi4y909mlf`. Mientras tanto la UI de cobertura cae al mock local sin avisar |
+| 3 | **API pública con `/draft`, `/coverage`, `/documents`** | **HECHO 14 sep 16:07 COT** | `bash scripts/deploy_api_member.sh` copió el paquete del Lambda master al miembro (`rentalista-api`, mismo CodeSha256). Verificado por CloudFront: `GET /draft` 200 con saldo a favor 3.709.000, `GET /coverage` 200 con 5 filas, `POST /documents` 201 |
 | 4 | Quitar "max 240 UVT" del pitch | Hecho en `docs/devpost-submission-en.md` | El 25 % laboral es renta exenta con tope **790 UVT** (art. 206 num. 10, Ley 2277/2022); el motor usa 240 UVT y lo trata como no constitutivo (H1). No mencionar el tope en el video |
 | 5 | Live View en `/case/browser/` | No demoable | La página desplegada sigue con la guarda `!API_BASE` (env vacío): el chunk no contiene la llamada a `live-view`. Solo si se quiere mostrar: quitar la guarda, rebuild, subir |
 | 6 | `make verify` | Rojo | `ruff format` 3 archivos (`agent/__main__.py`, `ingestion/pdf_facts.py`, `tax/form210.py`), mypy 17 errores. Tests 52 en verde, `ruff check` OK, `tsc` OK |
@@ -43,14 +43,14 @@ El **AgentCore Runtime** ejecuta el entrypoint determinista. **Strands, el model
 | **Demo ES** | https://deuhmh4dvlr6i.cloudfront.net/es/ | 200 |
 | Draft UI | `/en/case/draft/` · `/es/case/draft/` | 200; chunk desplegado con 3.709.000 / 926.000 / c33 / c34 y banner DIAN |
 | Live View UI | `/en/case/browser/` | 200 pero inerte (sin fetch a `live-view`) |
-| **API** | `https://deuhmh4dvlr6i.cloudfront.net/api/v1/` | `health`, `POST /cases`, `PUT /profile`, `POST /jobs` (SUCCEEDED, caso DRAFT_READY) OK; `GET /draft`, `GET /coverage`, `/documents` → 404 `Not Found` (build anterior) |
+| **API** | `https://deuhmh4dvlr6i.cloudfront.net/api/v1/` | `health`, `POST /cases`, `PUT /profile`, `POST /jobs` (SUCCEEDED, caso DRAFT_READY), `GET /draft` (200, saldo a favor 3.709.000), `GET /coverage` (200, 5 filas), `POST/GET /documents` (201) — todo OK desde el redeploy de las 16:07 COT |
 | 404 de la API | | Ya devuelve JSON 404 (antes CloudFront lo convertía en `index.html` 200) |
 | CSP | | `frame-src` y `connect-src` para `*.bedrock-agentcore.us-east-1.amazonaws.com`; `x-frame-options: SAMEORIGIN` |
 | `/demo-portal/*` | | 404 HTML: no está enrutado en CloudFront; solo con la API local |
 | CloudFront | `EEMC7WEZFXF40` | |
 | S3 web | `rentalista-web-697020387519` | |
 | Lambda API master | `pi4y909mlf` (cuenta `690968743338`) | **Código actual** (`/draft`, `/coverage` OK) |
-| Lambda API miembro | `rentalista-api` · `lnfsntpv6j` (cuenta `697020387519`) | **Build anterior**; es el origen de CloudFront |
+| Lambda API miembro | `rentalista-api` · `lnfsntpv6j` (cuenta `697020387519`) | Origen de CloudFront; **código actual** desde el 14 sep 16:07 COT (mismo paquete que el master, vía `scripts/deploy_api_member.sh`) |
 | AgentCore Runtime | `rentalista_agent-xznI3y9jcZ` | READY; ejecuta el entrypoint determinista |
 | Gateway Web Search | `rentalista-websearch2-f29eutucy6` · target `DP0IKFORKR` | READY; sin cliente en el código |
 | Bedrock | `amazon.nova-micro-v1:0` · us-east-1 | sin invocación en el código |
@@ -95,7 +95,7 @@ c137 saldo a favor          3.709.000
 
 - `POST /cases?locale=en|es` → token · `GET /cases/{id}` · `PUT /profile` → PROFILED
 - `POST /jobs` `PREPARE_DRAFT` → SUCCEEDED, caso DRAFT_READY, borrador guardado en memoria con los montos de los fixtures (o el snapshot congelado si el zip no trae openpyxl)
-- `GET /draft` · `GET /coverage` (5 filas fijas) · `POST/GET /documents` — **en código y en el Lambda master; no en el Lambda que sirve CloudFront** (ítem 3)
+- `GET /draft` · `GET /coverage` (5 filas fijas) · `POST/GET /documents` — en producción detrás de CloudFront desde el 14 sep 16:07 COT (verificado e2e)
 - `GET .../live-view` (firma ≤ 300 s; requiere `bedrock-agentcore` en el zip y una sesión Browser)
 - Portal `/demo-portal` OTP `123456` (solo local)
 - Store in-memory: se pierde al reciclar el Lambda; clave de idempotencia global (no por caso)
@@ -104,12 +104,12 @@ c137 saldo a favor          3.709.000
 
 - Next.js 15 static export, **en por defecto**, es
 - Draft: resumen + ledger bilingüe (c33, c34, c92, c116, c132, c134, c137) + disclaimer DIAN; usa el snapshot `demo-draft.json`, no llama a `GET /draft`
-- Coverage/documents: llaman a la API si el caso no es mock; con el build desplegado reciben 404 y muestran el mock local
+- Coverage/documents: llaman a la API si el caso no es mock; con la API redeployada, cobertura muestra la tabla "Exogenous rows (API)" (5 filas) además del inventario local, y "Mark as uploaded" registra el documento vía `POST /documents`
 - Footer con "Borrador para revisión. No ha sido presentado ante la DIAN."
 
 ### Infra (14 sep)
 
-- Lambda en cuenta miembro creado (el SCP ya permite CreateFunction), API Gateway `lnfsntpv6j`, pero con zip anterior
+- Lambda en cuenta miembro creado (el SCP ya permite CreateFunction), API Gateway `lnfsntpv6j`; el 14 sep a las 16:07 COT recibió el paquete actual del master con `scripts/deploy_api_member.sh` (verifica `GET /draft` por CloudFront y hace rollback si falla)
 - CSP `frame-src` AgentCore en CloudFront (policy `rentalista-csp`)
 - CloudFront ya no reescribe los 404 de la API
 - CI: `.github/workflows/ci.yml` existe solo en local (gitignored; el PAT no tiene scope `workflow`), así que el repo público no tiene CI
@@ -143,7 +143,7 @@ Con H1 y H2 corregidos el demo sigue dando **saldo a favor**, del orden de 4,6 M
 
 ### Producto / infra
 
-- **P1** CloudFront → Lambda miembro con build anterior (ítem 3 de "Qué falta").
+- **P1** ~~CloudFront → Lambda miembro con build anterior~~ resuelto el 14 sep 16:07 COT (ítem 3 de "Qué falta").
 - **P2** Live View UI inerte en el build desplegado (`browser-content.tsx:41`, guarda `!API_BASE`).
 - **P3** `/demo-portal/*` no enrutado; Strands / Bedrock / Gateway sin uso en código; la API no invoca el Runtime.
 - **P4** Clave de idempotencia global (`api/store.py:85`); los jobs distintos de PREPARE_DRAFT quedan ACCEPTED con lock de 10 min; `live-view` firma cualquier `session_id`.
@@ -153,7 +153,7 @@ Con H1 y H2 corregidos el demo sigue dando **saldo a favor**, del orden de 4,6 M
 
 ### Resuelto desde el 11 sep
 
-Tabla art. 241 + tests · números UI = motor (test) · banner DIAN en UI · API con `PREPARE_DRAFT` real, DRAFT_READY y `GET /draft` (en código) · CloudFront 404 JSON · CSP frame-src · i18n es/en · redondeo art. 577 · `make demo-draft` coherente · diagrama `.md` · video demo real grabado con Playwright + narración (`scripts/demo-video/`).
+Tabla art. 241 + tests · números UI = motor (test) · banner DIAN en UI · API con `PREPARE_DRAFT` real, DRAFT_READY, `GET /draft`, `GET /coverage` y `/documents` en producción · CloudFront 404 JSON · CSP frame-src · i18n es/en · redondeo art. 577 · `make demo-draft` coherente · diagrama `.md` · video demo real grabado con Playwright + narración (`scripts/demo-video/`).
 
 ---
 
@@ -181,8 +181,8 @@ OTP portal sintético: **`123456`**
 - [x] URL live sin login hasta 8 oct (200 el 14 sep)
 - [x] Solo datos sintéticos (pendiente confirmar el ID `1019072850`)
 - [x] Video grabado ≤ 5:00 (`docs/rentalista-demo-live.mp4`, 3:10, demo real con narración)
-- [ ] Video **subido** (YouTube/Vimeo público) y URL pegada
-- [ ] 3 frases del pitch verificadas en el video
+- [x] Video **subido**: https://www.youtube.com/watch?v=qnakivEdego
+- [x] 3 frases del pitch en la tarjeta inicial y en la narración (0:00–0:30)
 - [ ] Devpost `submitted` antes de **19:00 COT**
 - [ ] Builder ID = **hetzel30@gmail.com** en el formulario
 - [ ] Track único: Everyday Agents
