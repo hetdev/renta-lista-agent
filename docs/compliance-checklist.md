@@ -4,11 +4,11 @@
 - [x] Public GitHub repo + MIT license
 - [x] README (EN) + architecture diagram (`docs/architecture.md`)
 - [x] Live URL free, no login (until 2026-10-08 19:00 COT) — HTTP 200 verified 14 Sep
-- [x] Video ≤ 5:00 **recorded** — `docs/rentalista-demo-live.mp4`, 3:10, 1280×720, live app + English narration + captions (local, gitignored; regenerate with `scripts/demo-video/`)
-- [ ] **Video uploaded** to YouTube/Vimeo (public) and URL pasted below and on Devpost
+- [x] Video ≤ 5:00 — **YouTube**: https://www.youtube.com/watch?v=qnakivEdego (local `docs/rentalista-demo-live.mp4`, 3:10)
+- [x] **Video uploaded** to YouTube (public) — URL above; paste on Devpost
 - [x] **3 pitch phrases** (problem / who it's for / why it matters) on the opening card and in the voice-over (0:00–0:30)
 - [ ] **Devpost submitted** before 2026-09-14 19:00 COT (internal cut 15:00 COT)
-- [ ] **AWS Builder ID email** on the form → **hetzel30@gmail.com**
+- [x] **AWS Builder ID email** → **hetzel30@gmail.com**
 - [x] Track: Everyday Agents only
 - [x] Synthetic data only — confirm the ID `1019072850` in `demo/fixtures/reporteExogena2025_demo.xlsx` (and `*2850` in the Nequi PDF) is synthetic; replace it if in doubt
 

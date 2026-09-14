@@ -36,7 +36,7 @@ Get one at https://profile.aws.amazon.com/ (sign up with email).
 Paste the **email** you used: **hetzel30@gmail.com**
 
 ## Video
-_(paste YouTube/Vimeo URL, ≤ 5:00 — recorded locally as `docs/rentalista-demo-live.mp4`, 3:10, live app with English narration and captions)_
+https://www.youtube.com/watch?v=qnakivEdego
 
 ## Notes
 - Synthetic data only on the public demo
