@@ -65,7 +65,7 @@ def health() -> dict[str, str]:
 
 
 @app.post("/api/v1/cases", status_code=201)
-def post_case(locale: str = "es") -> dict[str, Any]:
+def post_case(locale: str = "en") -> dict[str, Any]:
     try:
         case, token = create_case(store, locale=locale)
     except QuotaExceededError as exc:

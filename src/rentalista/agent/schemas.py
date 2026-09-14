@@ -30,7 +30,7 @@ def run_command(payload: dict[str, Any]) -> dict[str, Any]:
         draft = calculate_form210(
             facts,
             rule_version=payload.get("rule_version", "ag2025-0.1.0"),
-            locale=payload.get("locale", "es"),
+            locale=payload.get("locale", "en"),
         )
         return {
             "case_id": payload["case_id"],

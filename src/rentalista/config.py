@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     aws_profile: str = "rentalista"
     bedrock_model_id: str = "amazon.nova-micro-v1:0"
     demo_mode: bool = True
+    default_locale: Literal["es", "en"] = "en"
     browser_session_timeout_seconds: int = 1800
     browser_viewport_width: int = 1280
     browser_viewport_height: int = 800

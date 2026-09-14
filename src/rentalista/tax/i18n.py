@@ -54,8 +54,8 @@ DISCLAIMER: dict[Locale, str] = {
 }
 
 
-def cell_label(cell: int, locale: Locale = "es") -> str:
+def cell_label(cell: int, locale: Locale = "en") -> str:
     pair = CELL_LABELS.get(cell)
     if not pair:
-        return f"Casilla {cell}" if locale == "es" else f"Cell {cell}"
-    return pair.get(locale, pair["es"])
+        return f"Cell {cell}" if locale == "en" else f"Casilla {cell}"
+    return pair.get(locale, pair["en"])

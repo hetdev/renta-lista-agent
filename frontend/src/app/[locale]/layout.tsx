@@ -18,7 +18,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const safe = isLocale(locale) ? locale : "es";
+  const safe = isLocale(locale) ? locale : "en";
   const m = getMessages(safe);
   return {
     title: `${m.app.name} · ${m.app.year}`,

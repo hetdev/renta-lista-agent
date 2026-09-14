@@ -60,7 +60,7 @@ def calculate_form210(
     facts: ConfirmedTaxFacts,
     *,
     rule_version: str,
-    locale: Locale = "es",
+    locale: Locale = "en",
 ) -> Draft210:
     """Pure Form 210 draft calculator. No I/O, no floats, no LLM."""
     uvt = uvt_2025()
