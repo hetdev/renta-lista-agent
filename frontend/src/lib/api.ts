@@ -80,6 +80,61 @@ function computeAdmitted(body: Record<string, unknown>): boolean {
   return required.every((key) => body[key] === true);
 }
 
+export async function addDocument(
+  caseId: string,
+  token: string,
+  body: { name: string; kind?: string; sha256?: string; size_bytes?: number },
+): Promise<{ ok: boolean; mock?: boolean }> {
+  try {
+    const res = await fetch(`${API_BASE}/api/v1/cases/${caseId}/documents`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-case-token": token },
+      body: JSON.stringify({ kind: "certificate", ...body }),
+      signal: AbortSignal.timeout(5000),
+    });
+    return { ok: res.ok, mock: false };
+  } catch {
+    return { ok: true, mock: true };
+  }
+}
+
+export async function getCoverage(
+  caseId: string,
+  token: string,
+): Promise<{
+  items: { reporter: string; amount_cop: number; status: string; material: boolean }[];
+  must_file?: boolean;
+  mock?: boolean;
+} | null> {
+  try {
+    const res = await fetch(`${API_BASE}/api/v1/cases/${caseId}/coverage`, {
+      headers: { "x-case-token": token },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return null;
+    const data = (await res.json()) as {
+      items: { reporter: string; amount_cop: number; status: string; material: boolean }[];
+      must_file?: boolean;
+    };
+    return { ...data, mock: false };
+  } catch {
+    return null;
+  }
+}
+
+export async function getDraft(caseId: string, token: string): Promise<Record<string, unknown> | null> {
+  try {
+    const res = await fetch(`${API_BASE}/api/v1/cases/${caseId}/draft`, {
+      headers: { "x-case-token": token },
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+}
+
 export function formatCOP(value: number, locale: "es" | "en" = "es"): string {
   return new Intl.NumberFormat(locale === "en" ? "en-US" : "es-CO", {
     style: "currency",

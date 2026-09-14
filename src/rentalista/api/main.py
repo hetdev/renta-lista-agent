@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import Any
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
@@ -24,6 +24,17 @@ from rentalista.domain.models import TaxpayerProfile
 store = InMemoryStore()
 app = FastAPI(title="RentaLista API", version="0.1.0")
 app.include_router(demo_portal_router)
+
+# Per-case coverage/document/draft blobs (in-memory demo store).
+_case_extras: dict[str, dict[str, Any]] = {}
+
+
+class DocumentIn(BaseModel):
+    kind: str = "certificate"
+    name: str
+    sha256: str = ""
+    size_bytes: int = 0
+    mime: str = "application/pdf"
 
 
 class ProfileIn(BaseModel):
@@ -158,6 +169,8 @@ def post_job(
             complete_job(
                 store, job["job_id"], status=JobStatus.SUCCEEDED, stage=str(result.get("status"))
             )
+            extras = _case_extras.setdefault(str(case_id), {})
+            extras["draft"] = result
         except Exception as exc:  # noqa: BLE001
             complete_job(
                 store, job["job_id"], status=JobStatus.FAILED, stage="failed", error=str(exc)
@@ -211,3 +224,101 @@ def live_view(
     except Exception as exc:  # noqa: BLE001
         raise HTTPException(status_code=503, detail=f"live view unavailable: {exc}") from exc
     return {"url": url, "expires_in": 300, "session_id": session_id}
+
+
+@app.post("/api/v1/cases/{case_id}/documents", status_code=201)
+def add_document(
+    case_id: UUID,
+    body: DocumentIn,
+    x_case_token: str = Header(default=""),
+) -> dict[str, Any]:
+    try:
+        get_case_for_token(store, case_id, x_case_token)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="case not found") from exc
+    extras = _case_extras.setdefault(str(case_id), {})
+    docs = extras.setdefault("documents", [])
+    doc = {
+        "document_id": str(uuid4()),
+        "kind": body.kind,
+        "name": body.name,
+        "sha256": body.sha256,
+        "size_bytes": body.size_bytes,
+        "mime": body.mime,
+        "status": "ingested",
+    }
+    docs.append(doc)
+    case = store.cases[case_id]
+    if case.status == CaseStatus.PROFILED:
+        case.status = CaseStatus.DOCUMENTS_UPLOADED
+    return doc
+
+
+@app.get("/api/v1/cases/{case_id}/documents")
+def list_documents(
+    case_id: UUID,
+    x_case_token: str = Header(default=""),
+) -> dict[str, Any]:
+    try:
+        get_case_for_token(store, case_id, x_case_token)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="case not found") from exc
+    return {"documents": _case_extras.get(str(case_id), {}).get("documents", [])}
+
+
+@app.get("/api/v1/cases/{case_id}/coverage")
+def get_coverage(
+    case_id: UUID,
+    x_case_token: str = Header(default=""),
+) -> dict[str, Any]:
+    """Demo coverage from the exogenous fixtures (14 rows)."""
+    try:
+        get_case_for_token(store, case_id, x_case_token)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="case not found") from exc
+    try:
+        from rentalista.ingestion.demo_pipeline import DEMO_CASE_ID, run_pipeline
+        from pathlib import Path
+
+        root = Path(__file__).resolve().parents[3]
+        payload, _ = run_pipeline(
+            root / "demo" / "fixtures" / "reporteExogena2025_demo.xlsx",
+            root / "demo" / "fixtures" / "nequi_retencion_demo.pdf",
+            case_id=str(case_id),
+        )
+        items = []
+        by = payload.get("by_reporter") or {}
+        for reporter, total in by.items():
+            items.append(
+                {
+                    "reporter": reporter,
+                    "amount_cop": total,
+                    "status": "VERIFIED_WITH_CERTIFICATE"
+                    if "NEQUI" in reporter.upper() or "BOGOT" in reporter.upper()
+                    else "DOCUMENT_MISSING",
+                    "material": total > 0,
+                }
+            )
+        return {
+            "exogenous_rows": payload.get("exogenous_rows"),
+            "items": items,
+            "obligation": payload.get("obligation"),
+            "must_file": payload.get("draft", {}).get("must_file"),
+        }
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(status_code=503, detail=f"coverage unavailable: {exc}") from exc
+
+
+@app.get("/api/v1/cases/{case_id}/draft")
+def get_draft(
+    case_id: UUID,
+    x_case_token: str = Header(default=""),
+) -> dict[str, Any]:
+    try:
+        get_case_for_token(store, case_id, x_case_token)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="case not found") from exc
+    draft = _case_extras.get(str(case_id), {}).get("draft")
+    if not draft:
+        raise HTTPException(status_code=404, detail="draft not ready")
+    return draft

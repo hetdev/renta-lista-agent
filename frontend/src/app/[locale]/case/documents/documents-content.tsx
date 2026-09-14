@@ -6,6 +6,7 @@ import { CaseBoundary } from "@/components/case-context";
 import { PageHeader } from "@/components/shell";
 import { useShell } from "@/components/locale-shell";
 import { getCaseBlob, getCaseSession, saveCaseBlob } from "@/lib/case-session";
+import { addDocument } from "@/lib/api";
 import { path, type Locale } from "@/lib/i18n";
 import type { Messages } from "@/lib/messages";
 
@@ -93,6 +94,14 @@ function DocumentsList({
       saveCaseBlob(activeCaseId, "documents", next);
       return next;
     });
+    if (status === "DOWNLOADED" && activeCaseId && session?.token && !session.mock) {
+      void addDocument(activeCaseId, session.token, {
+        name: `${key}.pdf`,
+        kind: "certificate",
+        sha256: `demo-${key}`,
+        size_bytes: 1024,
+      });
+    }
   }
 
   const missing = DOC_KEYS.filter((k) => docs[k] !== "DOWNLOADED").length;
