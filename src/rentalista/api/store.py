@@ -36,7 +36,7 @@ def hash_token(token: str) -> str:
 
 
 def create_case(
-    store: InMemoryStore, *, locale: str = "es", demo: bool = False
+    store: InMemoryStore, *, locale: str = "en", demo: bool = False
 ) -> tuple[TaxCase, str]:
     day = store.day_key()
     if store.daily_cases[day] >= 200:

@@ -135,7 +135,7 @@ export async function getDraft(caseId: string, token: string): Promise<Record<st
   }
 }
 
-export function formatCOP(value: number, locale: "es" | "en" = "es"): string {
+export function formatCOP(value: number, locale: "es" | "en" = "en"): string {
   return new Intl.NumberFormat(locale === "en" ? "en-US" : "es-CO", {
     style: "currency",
     currency: "COP",

@@ -75,7 +75,7 @@ class TaxCase(StrictModel):
     active_job_id: UUID | None = None
     lock_expires_at: datetime | None = None
     tax_year: Literal[2025] = 2025
-    locale: Literal["es", "en"] = "es"
+    locale: Literal["es", "en"] = "en"
     profile: TaxpayerProfile | None = None
     rule_version: str = "ag2025-0.1.0"
     document_ids: list[UUID] = Field(default_factory=list)
@@ -256,7 +256,7 @@ class Draft210(StrictModel):
     draft_version: int = 1
     rule_version: str
     tax_year: Literal[2025] = 2025
-    locale: Literal["es", "en"] = "es"
+    locale: Literal["es", "en"] = "en"
     must_file: bool
     obligation_reasons: list[ObligationCriterion] = Field(default_factory=list)
     cells: dict[int, CellResult] = Field(default_factory=dict)
