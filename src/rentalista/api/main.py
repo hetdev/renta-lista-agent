@@ -271,42 +271,49 @@ def get_coverage(
     case_id: UUID,
     x_case_token: str = Header(default=""),
 ) -> dict[str, Any]:
-    """Demo coverage from the exogenous fixtures (14 rows)."""
+    """Demo coverage from the exogenous fixtures (frozen for Lambda)."""
     try:
         get_case_for_token(store, case_id, x_case_token)
     except KeyError as exc:
         raise HTTPException(status_code=404, detail="case not found") from exc
-    try:
-        from rentalista.ingestion.demo_pipeline import DEMO_CASE_ID, run_pipeline
-        from pathlib import Path
-
-        root = Path(__file__).resolve().parents[3]
-        payload, _ = run_pipeline(
-            root / "demo" / "fixtures" / "reporteExogena2025_demo.xlsx",
-            root / "demo" / "fixtures" / "nequi_retencion_demo.pdf",
-            case_id=str(case_id),
-        )
-        items = []
-        by = payload.get("by_reporter") or {}
-        for reporter, total in by.items():
-            items.append(
-                {
-                    "reporter": reporter,
-                    "amount_cop": total,
-                    "status": "VERIFIED_WITH_CERTIFICATE"
-                    if "NEQUI" in reporter.upper() or "BOGOT" in reporter.upper()
-                    else "DOCUMENT_MISSING",
-                    "material": total > 0,
-                }
-            )
-        return {
-            "exogenous_rows": payload.get("exogenous_rows"),
-            "items": items,
-            "obligation": payload.get("obligation"),
-            "must_file": payload.get("draft", {}).get("must_file"),
-        }
-    except Exception as exc:  # noqa: BLE001
-        raise HTTPException(status_code=503, detail=f"coverage unavailable: {exc}") from exc
+    items = [
+        {
+            "reporter": "SERVICIOS EMPRESARIALES ANDINOS S.A.S.",
+            "amount_cop": 92_200_000,
+            "status": "VERIFIED_WITH_CERTIFICATE",
+            "material": True,
+        },
+        {
+            "reporter": "BANCO DE BOGOTÁ S.A.",
+            "amount_cop": 124_279_467,
+            "status": "VERIFIED_WITH_CERTIFICATE",
+            "material": True,
+        },
+        {
+            "reporter": "NEQUI S.A. COMPAÑÍA DE FINANCIAMIENTO",
+            "amount_cop": 1_778_320,
+            "status": "VERIFIED_WITH_CERTIFICATE",
+            "material": True,
+        },
+        {
+            "reporter": "RAPPIPAY COMPAÑÍA DE FINANCIAMIENTO S.A.",
+            "amount_cop": 42_000_000,
+            "status": "DOCUMENT_MISSING",
+            "material": True,
+        },
+        {
+            "reporter": "BANCO SINTÉTICO ANDINO S.A.",
+            "amount_cop": 0,
+            "status": "DOCUMENT_MISSING",
+            "material": True,
+        },
+    ]
+    return {
+        "exogenous_rows": 14,
+        "items": items,
+        "obligation": True,
+        "must_file": True,
+    }
 
 
 @app.get("/api/v1/cases/{case_id}/draft")
