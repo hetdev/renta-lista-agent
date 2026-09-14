@@ -160,24 +160,36 @@ def run_pipeline(
 
 
 def default_demo_amounts() -> dict[str, int]:
-    """Amounts from the repo fixtures — used by API PREPARE_DRAFT when none are posted."""
+    """Amounts from the repo fixtures (or the frozen fallback for Lambda)."""
     root = Path(__file__).resolve().parents[3]
     xlsx = root / "demo" / "fixtures" / "reporteExogena2025_demo.xlsx"
     pdf = root / "demo" / "fixtures" / "nequi_retencion_demo.pdf"
-    if not xlsx.exists() or not pdf.exists():
-        return {}
-    rows = read_exogenous_xlsx(xlsx)
-    facts = extract_nequi_facts(pdf)
-    m = map_amounts(rows, facts)
+    if xlsx.exists() and pdf.exists():
+        rows = read_exogenous_xlsx(xlsx)
+        facts = extract_nequi_facts(pdf)
+        m = map_amounts(rows, facts)
+        return {
+            "patrimonio_bruto": m["patrimonio"],
+            "deudas": 0,
+            "ingresos_brutos": m["ingresos"],
+            "salarios": m["salarios"],
+            "aportes_salud_pension": m["aportes"],
+            "rendimientos_financieros": m["rendimientos"],
+            "no_constitutivos_capital": m["no_const"],
+            "retenciones_fuente": m["retenciones"],
+            "intereses_vivienda": m["intereses_vivienda"],
+            "compras_factura_electronica": m["compras_factura"],
+        }
+    # Frozen snapshot for serverless (fixtures/openpyxl not in the Lambda zip).
     return {
-        "patrimonio_bruto": m["patrimonio"],
+        "patrimonio_bruto": 186_887_300,
         "deudas": 0,
-        "ingresos_brutos": m["ingresos"],
-        "salarios": m["salarios"],
-        "aportes_salud_pension": m["aportes"],
-        "rendimientos_financieros": m["rendimientos"],
-        "no_constitutivos_capital": m["no_const"],
-        "retenciones_fuente": m["retenciones"],
-        "intereses_vivienda": m["intereses_vivienda"],
-        "compras_factura_electronica": m["compras_factura"],
+        "ingresos_brutos": 93_579_340,
+        "salarios": 89_250_000,
+        "aportes_salud_pension": 7_200_000,
+        "rendimientos_financieros": 384_670,
+        "no_constitutivos_capital": 213_200,
+        "retenciones_fuente": 4_635_000,
+        "intereses_vivienda": 4_800_000,
+        "compras_factura_electronica": 12_000_000,
     }

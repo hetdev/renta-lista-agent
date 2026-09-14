@@ -119,7 +119,25 @@ def post_job(
     case = store.cases[case_id]
     if body.command is AgentCommand.PREPARE_DRAFT and case.profile is not None:
         from rentalista.agent.schemas import run_command
-        from rentalista.ingestion.demo_pipeline import default_demo_amounts
+
+        amounts: dict[str, int] = {}
+        try:
+            from rentalista.ingestion.demo_pipeline import default_demo_amounts
+
+            amounts = default_demo_amounts()
+        except Exception:  # noqa: BLE001 — Lambda zip has no openpyxl/fixtures
+            amounts = {
+                "patrimonio_bruto": 186_887_300,
+                "deudas": 0,
+                "ingresos_brutos": 93_579_340,
+                "salarios": 89_250_000,
+                "aportes_salud_pension": 7_200_000,
+                "rendimientos_financieros": 384_670,
+                "no_constitutivos_capital": 213_200,
+                "retenciones_fuente": 4_635_000,
+                "intereses_vivienda": 4_800_000,
+                "compras_factura_electronica": 12_000_000,
+            }
 
         try:
             result = run_command(
@@ -128,7 +146,7 @@ def post_job(
                     "case_id": str(case_id),
                     "job_id": str(job["job_id"]),
                     "profile": case.profile.model_dump(),
-                    "amounts": default_demo_amounts(),
+                    "amounts": amounts,
                     "dependents": case.profile.dependents_confirmed or 1,
                     "locale": case.locale,
                 }
