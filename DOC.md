@@ -1,7 +1,7 @@
 # RentaLista Agent — Estado del proyecto
 
 **Actualizado:** 14 de septiembre de 2026 · HEAD `ecd3a9b`  
-**Hackathon:** [Agents for Humans](https://agentsforhumans.devpost.com) · **deadline hoy 14 sep 2026 17:00 PT**  
+**Hackathon:** [Agents for Humans](https://agentsforhumans.devpost.com) · **deadline hoy 14 sep 2026 19:00 COT** (19:00 COT)  
 **Repo:** https://github.com/hetdev/renta-lista-agent
 
 ---
@@ -98,7 +98,7 @@ c137 saldo a favor      3.709.000
 | # | Ítem | Prioridad | Notas |
 |---|---|---|---|
 | **1** | **Video ≤ 5:00** | **CRÍTICO** | Requisito Devpost. Guion: `docs/demo-script.md`. Grabar con saldo 3.709.000 y c33/c34 visibles |
-| **2** | **Envío Devpost + Builder ID (email)** | **CRÍTICO** | `docs/compliance-checklist.md`. Corte interno 15:00 COT / deadline 17:00 PT |
+| **2** | **Envío Devpost + Builder ID (email)** | **CRÍTICO** | `docs/compliance-checklist.md`. Corte interno 15:00 COT · deadline **19:00 COT** |
 | 3 | Live View real en el video | Alto | Endpoint listo; abrir sesión Browser y pegar `?session=` en `/case/browser/` |
 | 4 | Cobertura UI → API | Medio | UI lista; API route en código; GW aún parcial — usar mock si falla |
 | 5 | Golden vs Ayuda Renta | Bajo | Manual una vez |
@@ -144,7 +144,7 @@ UI draft = motor · jobs SUCCEEDED · 25% laboral + 72 UVT/dep · art. 241 · ar
 ## Checklist Devpost
 
 - [ ] Video público ≤ 5:00 (demo + pitch 3 frases)
-- [ ] Devpost `submitted` antes de 17:00 PT
+- [ ] Devpost `submitted` antes de **19:00 COT** (19:00 COT)
 - [ ] Builder ID = email
 - [ ] Repo público MIT (hecho)
 - [ ] README EN + diagrama (hecho)

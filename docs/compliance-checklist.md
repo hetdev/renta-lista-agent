@@ -3,9 +3,9 @@
 ## Hard requirements
 - [x] Public GitHub repo + MIT license
 - [x] README (EN) + architecture diagram
-- [x] Live URL free, no login (until 2026-10-08 17:00 PT)
+- [x] Live URL free, no login (until 2026-10-08 19:00 COT)
 - [ ] **Video ≤ 5:00** (demo + 3-part pitch) — **FALTA GRABAR**
-- [ ] **Devpost submitted** before 2026-09-14 17:00 PT
+- [ ] **Devpost submitted** before 2026-09-14 19:00 COT
 - [ ] **AWS Builder ID email** on the form
 - [x] Track: Everyday Agents only
 - [x] Synthetic data only
