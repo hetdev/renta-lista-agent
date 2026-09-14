@@ -68,15 +68,23 @@ c137 saldo a favor      3.709.000
 ```
 
 ### API pública
-- `POST /cases?locale=es|en` → token  
-- `PUT /profile` → `PROFILED`  
-- `POST /jobs` `PREPARE_DRAFT` → **`SUCCEEDED`** (montos demo + locale del caso)  
-- Portal `/demo-portal` OTP `123456` + expiración  
-- Live View endpoint (firma ≤300 s)
+- `POST /cases?locale=es|en` → token — **OK**
+- `PUT /profile` → `PROFILED` — **OK**
+- `POST /jobs` `PREPARE_DRAFT` → **`SUCCEEDED`** — **OK**
+- `GET /draft` · `POST /documents` · `GET /coverage` — en código y en OpenAPI del zip; el API Gateway desplegado aún no los expone de forma fiable (store in-memory + deploy). Para el video: UI draft con `demo-draft.json` del engine
+- Live View: endpoint en el API; requiere `bedrock-agentcore` en el zip de Lambda y una sesión Browser activa
+- Portal `/demo-portal` OTP `123456`
+
+### Infra extra (14 sep)
+- Lambda **cuenta miembro** `rentalista-api` (SCP ya permite CreateFunction)
+- API Gateway HTTP `lnfsntpv6j`
+- CSP `frame-src` AgentCore en CloudFront
+- CI local en `.github/workflows/ci.yml` (no se pushea: el token OAuth no tiene scope `workflow`)
 
 ### Frontend
-- Next.js 15 static export es/en  
-- Draft UI: resumen + **ledger de casillas bilingüe** + disclaimer DIAN  
+- Next.js 15 static export es/en
+- Draft UI: resumen + **ledger bilingüe** + disclaimer DIAN
+- Coverage/documents: UI lista; cobrellama a la API si responde, si no mock local
 - `demo-draft.json` con `labels.es/en` y `disclaimer.es/en`
 
 ### Calidad
@@ -91,13 +99,13 @@ c137 saldo a favor      3.709.000
 |---|---|---|---|
 | **1** | **Video ≤ 5:00** | **CRÍTICO** | Requisito Devpost. Guion: `docs/demo-script.md`. Grabar con saldo 3.709.000 y c33/c34 visibles |
 | **2** | **Envío Devpost + Builder ID (email)** | **CRÍTICO** | `docs/compliance-checklist.md`. Corte interno 15:00 COT / deadline 17:00 PT |
-| 3 | Live View real en el video | Alto | UI+API listas; abrir sesión Browser y grabar OTP handoff |
-| 4 | Cobertura UI → API real | Medio | Hoy draft/profile sí; coverage/documents mock |
-| 5 | Golden vs Ayuda Renta | Bajo | Manual una vez; motor ya determinista |
-| 6 | CSP `frame-src` CloudFront | Bajo | Solo si el iframe Live View falla |
-| 7 | Bonus builder.aws | Opcional | 0.6 pts; solo si P0 verde |
-| 8 | Lambda en cuenta miembro | Bloqueado | SCP org; API vive en master |
-| 9 | CI GitHub Actions | Bajo | `make verify` local sí |
+| 3 | Live View real en el video | Alto | Endpoint listo; abrir sesión Browser y pegar `?session=` en `/case/browser/` |
+| 4 | Cobertura UI → API | Medio | UI lista; API route en código; GW aún parcial — usar mock si falla |
+| 5 | Golden vs Ayuda Renta | Bajo | Manual una vez |
+| 6 | CSP `frame-src` CloudFront | **HECHO** | Response headers policy `rentalista-csp` |
+| 7 | Bonus builder.aws | Opcional | 0.6 pts |
+| 8 | Lambda en cuenta miembro | **HECHO** | `rentalista-api` + `lnfsntpv6j` |
+| 9 | CI GitHub Actions | Hecho local | `.github/workflows/ci.yml`; push requiere scope `workflow` en el PAT |
 
 ---
 
