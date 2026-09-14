@@ -7,29 +7,33 @@ Helps a Colombian tax-resident natural person reconcile third-party exogenous in
 
 > Borrador para revisión. No ha sido presentado ante la DIAN.
 
-## Status (11 Sep 2026 code review)
+## Status (14 Sep 2026)
 
 Honest snapshot. Full findings and priorities in [DOC.md](DOC.md).
 
 | Piece | State |
 |---|---|
-| Deterministic Form 210 engine (`src/rentalista/tax/`) | Working, 50 tests green. Art. 241 bracket table verified against the statute and the rule-pack YAML by unit tests (fixed 11 Sep 2026; the deployed UI still shows the pre-fix snapshot until redeployed). |
-| Ingestion: DIAN-layout exogenous XLSX + Nequi PDF | Working, as a local script (`scripts/run_demo_docs.py`) |
-| Public API | Creates cases, saves the profile, accepts jobs. `PREPARE_DRAFT` currently runs with empty amounts and does not return a draft |
-| Web UI (Next.js, es/en) | Profile page talks to the API. Documents, coverage and draft pages are local mocks; the draft page shows a static engine snapshot. The Live View page is inert in the deployed build |
-| Strands agent, Bedrock Nova Micro, Gateway Web Search | Resources deployed and READY, **not invoked by any code path yet** |
-| Synthetic demo portal (OTP `123456`) | Implemented in FastAPI; reachable only when running the API locally |
+| Deterministic Form 210 engine | **Working.** 25% labor (max 240 UVT), 72 UVT/dependent, art. 241 table, art. 577 rounding, art. 807 advance, bilingual **es/en** cell labels. 52 tests green. |
+| Ingestion (DIAN XLSX + Nequi PDF) | **Working** on repo fixtures (`demo/fixtures/`) |
+| Public API | **Working** on CloudFront: create case → profile → `PREPARE_DRAFT` returns **SUCCEEDED** with demo amounts and case locale |
+| Web UI (Next.js, es/en) | Landing, demo, profile, draft (engine snapshot + bilingual cell ledger + DIAN disclaimer). Documents/coverage still mock. Live View page present |
+| Strands / Bedrock / Gateway | Resources **READY**; Strands smoke-tested locally; not on the public demo path |
+| Synthetic portal (OTP `123456`) | In FastAPI (`/demo-portal`) |
+
+## Demo numbers (engine, rounded to thousands)
+
+`must_file=True` · impuesto **926.000** · retenciones 4.635.000 · **saldo a favor 3.709.000**
 
 ## What it does today
 
-1. Parses a DIAN-layout exogenous workbook and a Nequi certificate PDF (synthetic fixtures under `demo/fixtures/`)
-2. Evaluates the obligation to file (UVT 49.799, five thresholds with the DIAN operators)
-3. Calculates a Form 210 draft with a **deterministic engine** (no LLM arithmetic): per-cell formula, rule version, saldo invariants
-4. Serves a bilingual static UI and a small case/profile API
+1. Parses DIAN-layout exogenous workbook + Nequi PDF (synthetic fixtures)
+2. Evaluates obligation to file (UVT 49.799, five thresholds)
+3. Calculates Form 210 draft with a deterministic engine (no LLM math)
+4. Serves bilingual UI + case/profile API behind CloudFront
 
-## Planned, not wired yet
+## Planned / not fully wired
 
-Coverage matrix per reported row, missing-certificate recovery via portal search + AgentCore Browser with OTP handoff, human conflict resolution with a ledger, export packet. Domain models and policies exist under `src/rentalista/document_recovery/`; the API and UI wiring do not.
+Coverage matrix per exogenous row, missing-certificate recovery (portal search + Browser OTP handoff), human conflict ledger, export packet. Domain policies exist under `src/rentalista/document_recovery/`; API/UI wiring is partial.
 
 ## Architecture
 
@@ -47,7 +51,12 @@ See [docs/architecture.md](docs/architecture.md). Solid arrows are implemented; 
 
 | Resource | Id / URL |
 |---|---|
-| **Live demo** | **https://deuhmh4dvlr6i.cloudfront.net/** |
+| **Live demo (ES/EN)** | **https://deuhmh4dvlr6i.cloudfront.net/** |
+| **Public API** | `https://deuhmh4dvlr6i.cloudfront.net/api/v1/` |
+| Web bucket (public, synthetic only) | `rentalista-web-697020387519` |
+| AgentCore Runtime | `rentalista_agent-xznI3y9jcZ` READY |
+| AgentCore Gateway + Web Search | `rentalista-websearch2-f29eutucy6` READY |
+| Bedrock model | `amazon.nova-micro-v1:0` |
 | ES / EN | `/es/` · `/en/` |
 | Web bucket (public website, synthetic only) | `rentalista-web-697020387519` |
 | AgentCore Runtime | `rentalista_agent-xznI3y9jcZ` |
