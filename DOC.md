@@ -145,7 +145,7 @@ UI draft = motor · jobs SUCCEEDED · 25% laboral + 72 UVT/dep · art. 241 · ar
 
 - [ ] Video público ≤ 5:00 (demo + pitch 3 frases)
 - [ ] Devpost `submitted` antes de **19:00 COT** (oficial: 5:00 p. m. Pacific)
-- [ ] Builder ID = email
+- [ ] Builder ID = **hetzel30@gmail.com**
 - [ ] Repo público MIT (hecho)
 - [ ] README EN + diagrama (hecho)
 - [ ] URL live sin login hasta 8 oct (hecho)

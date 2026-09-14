@@ -6,7 +6,7 @@
 - [x] Live URL free, no login (until 2026-10-08 19:00 COT)
 - [ ] **Video ≤ 5:00** (demo + 3-part pitch) — **FALTA GRABAR**
 - [ ] **Devpost submitted** before 2026-09-14 19:00 COT
-- [ ] **AWS Builder ID email** on the form
+- [ ] **AWS Builder ID email** on the form → **hetzel30@gmail.com**
 - [x] Track: Everyday Agents only
 - [x] Synthetic data only
 
@@ -21,7 +21,7 @@
 | Demo | https://deuhmh4dvlr6i.cloudfront.net/ |
 | Repo | https://github.com/hetdev/renta-lista-agent |
 | Video | _(paste)_ |
-| Builder ID email | _(paste)_ |
+| Builder ID email | **hetzel30@gmail.com** |
 | Architecture | `docs/architecture.md` |
 
 ## AWS Builder ID — cómo conseguirlo (2 minutos)

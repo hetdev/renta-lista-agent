@@ -33,7 +33,7 @@ RentaLista helps a Colombian tax-resident person reconcile third-party exogenous
 
 ## Builder ID
 Get one at https://profile.aws.amazon.com/ (sign up with email).
-Paste the **email** you used: _(your@email.com)_
+Paste the **email** you used: **hetzel30@gmail.com**
 
 ## Video
 _(paste YouTube/Vimeo URL, ≤ 5:00)_
